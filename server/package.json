@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon --exec babel-node app.js",
+    "start": "babel-node app.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,5 +16,12 @@
     "jsonwebtoken": "^8.5.0",
     "mongoose": "^5.4.15",
     "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.4",
+    "nodemon": "^1.18.10"
   }
 }

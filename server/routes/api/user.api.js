@@ -1,8 +1,8 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
+import express from 'express';
+import jwt from 'jsonwebtoken';
 
-const { User } = require('../../models/User');
-const verifyToken = require('../../middlewares/verifyToken');
+import { User } from '../../models/User';
+import verifyToken from '../../middlewares/verifyToken';
 
 const router = express.Router();
 
@@ -74,4 +74,4 @@ router.get('/login', async function (req, res, next) {
     res.status(200).send(token);
 });
 
-module.exports = router;
+export default router;

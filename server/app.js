@@ -1,7 +1,10 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const logger = require('morgan');
-const initDatabase = require('./libs/Database');
+import express from 'express';
+import dotenv from 'dotenv';
+import logger from 'morgan';
+
+
+import initDatabase from './libs/Database';
+import apiRouter from './routes/api';
 
 const app = express();
 dotenv.config()
@@ -18,7 +21,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/api', require('./routes/api'));
+app.use('/api', apiRouter);
 
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);

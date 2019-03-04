@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-module.exports = function () {
+export default function () {
     mongoose.set('useCreateIndex', true);
     return mongoose.connect('mongodb://localhost/test',  { useNewUrlParser: true });
 }

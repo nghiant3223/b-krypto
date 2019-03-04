@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-module.exports = function (req, res, next) {
+export default function verifyToken(req, res, next) {
     const token = req.headers['x-access-token'];
 
     if (token === undefined) return next({ status: 403, message: "Token is not provided" });
