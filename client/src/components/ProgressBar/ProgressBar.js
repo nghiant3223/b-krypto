@@ -25,8 +25,8 @@ class ProgressBar extends Component {
 
     render() {
         return (
-            <div className="ProgressBar" style={{ width: `${this.state.percentage.toString()}%` }} />
-            //<div className="LoadingBar" />    
+            //<div className="ProgressBar" style={{ width: `${this.state.percentage.toString()}%` }} />
+            <div className="LoadingBar" />    
         
         );
     }

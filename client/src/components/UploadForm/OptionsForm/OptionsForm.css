@@ -1,0 +1,55 @@
+.OptionsForm {
+    flex-basis: 250px;
+    margin-right: 5px;
+    border: dashed 2px gray;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.OptionsForm__Type--Left {
+    margin-right: 10px;
+}
+
+.OptionsForm__Type--Right {
+    margin-left: 10px;
+    margin-right: 25px;
+}
+
+.OptionsForm>form {
+    margin-left: 0.5rem;
+    margin-top: 0.5rem;
+    flex-grow: 1;
+}
+
+.OptionsForm__Type {
+    padding-left: 1em;
+    padding-right: 1em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.OptionsForm__Title {
+    font-weight: bold;
+    font-size: 1.15em;
+    margin-left: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.OptionsForm__SubmitButton {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.OptionsForm__SubmitButton button {
+    border: 0;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    background: #ffbf00;
+    text-transform: uppercase;
+    color: rgb(49, 46, 46);
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    outline: none;
+}
