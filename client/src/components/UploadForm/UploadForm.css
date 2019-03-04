@@ -1,7 +1,7 @@
 .UploadForm--Pseudo {
     flex: 1 1 0;
     border-radius: 5px;
-    background: #fbde7e;
+    background: #ffecb3;
     position: relative;
 }
 
@@ -14,7 +14,7 @@
 .UploadForm__Plaintext,
 .UploadForm__Key {
     position: relative;
-    flex: 1 1 auto;
+    flex: 1 1;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -45,10 +45,6 @@
     display: block;
 }
 
-
-.UploadForm__Key {
-    border:dashed 2px gray;
-    border-radius: 5px;
-    margin-left: 5px;
+.UploadForm__FileName {
+    text-align: center;
 }
-

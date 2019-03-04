@@ -1,0 +1,1 @@
+export const SOCKET_PATH = "http://localhost:5000";

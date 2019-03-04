@@ -1,6 +1,6 @@
 .ProgressBar {
     height: 5px;
-    background-color: blue;
+    background-color: #4527a0;
     z-index: 5;
     transition: all 0.2s ease;
     border-top-left-radius: 2px;
@@ -11,7 +11,7 @@
     height: 5px;
     position: relative;
     background: linear-gradient(90deg, #eee 50%, transparent 50%);
-    background-color: blue;
+    background-color: #4527a0;
     background-size: 200%;
     background-position: 100%;
     border-radius: 5px;

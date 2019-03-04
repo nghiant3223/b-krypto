@@ -1,34 +1,16 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import './ProgressBar.css';
 
-class ProgressBar extends Component {
+class ProgressBar extends PureComponent {
     state = {
         percentage: 0
     }
 
-    componentDidMount() {
-        setInterval(() => {
-            this.setState(prevState => {
-                if (prevState.percentage >= 100) {
-                    console.log('greater');
-                    return {
-                        percentage: prevState.percentage
-                    }
-                }
-                else return ({
-                    percentage: prevState.percentage + 10
-                });
-            });
-        }, 500);
-    }
-
     render() {
-        return (
-            //<div className="ProgressBar" style={{ width: `${this.state.percentage.toString()}%` }} />
-            <div className="LoadingBar" />    
-        
-        );
+        if (this.props.isUploading) return <div className="LoadingBar" />;
+
+        return <div className="ProgressBar" style={{ width: `${this.state.percentage.toString()}%` }} />;
     }
 }
 
