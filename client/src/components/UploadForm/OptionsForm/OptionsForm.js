@@ -9,9 +9,36 @@ class OptionsForm extends PureComponent {
         return (
             <div className="OptionsForm">
                 <form>
+
+                    <div className="OptionsForm__Title">Method</div>
+                    <div className="OptionsForm__Type">
+                        <div className="OptionsForm__Type--Left" >
+                            <Radio
+                                checked={this.props.method === 0}
+                                onChange={e => this.props.onMethodChange(e)}
+                                value={0}
+                                name="radio-button-demo"
+                                aria-label="A"
+                                color="primary"
+                            /> <span >Encrypt</span >
+                        </div>
+
+                        <div className="OptionsForm__Type--Right">
+                            <Radio
+                                checked={this.props.method === 1}
+                                onChange={e => this.props.onMethodChange(e)}
+                                value={1}
+                                name="radio-button-demo"
+                                aria-label="B"
+                                color="primary"
+                            /> <span >Decrypt</span >
+                        </div>
+                    </div>
+
+
                     <div className="OptionsForm__Title">Type</div>
                     <div className="OptionsForm__Type">
-                        <span className="OptionsForm__Type--Left" >
+                        <div className="OptionsForm__Type--Left" >
                             <Radio
                                 checked={this.props.type === 0}
                                 onChange={e => this.props.onTypeChange(e)}
@@ -20,9 +47,9 @@ class OptionsForm extends PureComponent {
                                 aria-label="A"
                                 color="primary"
                             /> <span style={{ marginLeft: "-10px" }}>File</span >
-                        </span>
+                        </div>
 
-                        <span className="OptionsForm__Type--Right">
+                        <div className="OptionsForm__Type--Right">
                             <Radio
                                 checked={this.props.type === 1}
                                 onChange={e => this.props.onTypeChange(e)}
@@ -31,7 +58,7 @@ class OptionsForm extends PureComponent {
                                 aria-label="B"
                                 color="primary"
                             /> <span style={{ marginLeft: "-10px" }}>Folder</span >
-                        </span>
+                        </div>
                     </div>
                 </form>
 

@@ -7,7 +7,7 @@ export default (function () {
 
     function getInstance() {
         if (!instance) instance = Socket(SOCKET_PATH);
-        else return instance;
+        return instance;
     }
 
     function removeInstance() {

@@ -3,13 +3,15 @@ import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 
+import * as sharedConstants from '../shares/constants';
+
 function getFileName(fullname) {
     const matches = /(.*)[.](.*)$/.exec(fullname);
     const fileName = matches ? matches[1] : fullname;
     return fileName;
 }
 
-export default function encrypt(plaintext, key, algorithm, socket) {
+export function encrypt(plaintext, key, algorithm, socket) {
     const rootDir = process.cwd();
     fs.readFile(path.join(rootDir, 'public', 'uploads', key), 'utf8', function (err, password) {
         if (err) throw err;
@@ -37,11 +39,13 @@ export default function encrypt(plaintext, key, algorithm, socket) {
             const index = parseInt(cipherSize * flags.length / plaintextFileSize, 10);
             if (!flags[index]) {
                 flags[index] = true;
-                console.log('Emit');
+                socket.emit(sharedConstants.SERVER_SENDS_ENCRYPTION_PROGRESS);
             }
         });
 
         encryptedFileStream.on('finish', function () {
+            socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
+
             const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(plaintext)}.zip`));
             const archive = archiver('zip', { zlib: { level: 9 } });
 
@@ -51,7 +55,7 @@ export default function encrypt(plaintext, key, algorithm, socket) {
             archive.finalize();
 
             compressedStream.on('close', async function () {
-                console.log('Data has been drained');
+                socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(plaintext)}.zip` });
                 Promise.all([fs.unlinkSync(plaintextFilePath), fs.unlinkSync(keyFilePath), fs.unlinkSync(encryptedFilePath)]);
             });
         });

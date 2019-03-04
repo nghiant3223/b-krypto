@@ -1,5 +1,5 @@
 .OptionsForm {
-    flex-basis: 250px;
+    flex-basis: 300px;
     margin-right: 5px;
     border: dashed 2px gray;
     border-radius: 5px;
@@ -7,13 +7,16 @@
     flex-direction: column;
 }
 
+.OptionsForm__Type {
+    display: flex;
+}
+
 .OptionsForm__Type--Left {
-    margin-right: 10px;
+    flex: 1 1 50%;
 }
 
 .OptionsForm__Type--Right {
-    margin-left: 10px;
-    margin-right: 25px;
+    flex: 1 1 50%;
 }
 
 .OptionsForm>form {
