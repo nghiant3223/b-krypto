@@ -7,6 +7,7 @@ import KeyForm from './KeyForm/KeyForm';
 
 import { uploadFiles } from '../../services/file.service';
 import Socket from '../../socket';
+import * as sharedConstants from '../../shares/constants';
 
 import './UploadForm.css';
 
@@ -32,7 +33,11 @@ class UploadForm extends Component {
         try {
             const { data } = await uploadFiles(this.state.plaintextFile, this.state.keyFile);
             console.log(data);
+
             this.setState({ isUploading: false, isEncrypting: true });
+
+            const socket = Socket.getInstance();
+            socket.emit(sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL, data);
         } catch (e) {
             console.log(e);
             this.setState({ isUploading: false });

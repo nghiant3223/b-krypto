@@ -2,14 +2,18 @@ import express from 'express';
 import dotenv from 'dotenv';
 import logger from 'morgan';
 import http from 'http';
-import socketIO from 'socket.io';
-
+import path from 'path';
 
 import initDatabase from './libs/Database';
 import apiRouter from './routes/api';
+import socketIO from './socket';
 
 const app = express();
-dotenv.config()
+
+global.rootDir = path.resolve(__dirname);
+
+dotenv.config();
+
 initDatabase().then(function () {
     console.log('Connect to MongoDB database');
 }).catch(function (err) {
@@ -36,7 +40,7 @@ app.use(function (err, req, res, next) {
 });
 
 const server = http.createServer(app);
-const io = socketIO(server);
+socketIO(server);
 
 server.listen(PORT, function () {
     console.log('Listening on port', PORT); 
