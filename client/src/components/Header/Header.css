@@ -1,0 +1,52 @@
+.Header {
+    height: 75px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid gray;
+}
+
+.Header__left__logo {
+    font-family: "Passion One";
+    font-size: 2.25em;
+    margin-right: 1em;
+}
+
+.Header__left {
+    display: flex;
+}
+
+.Header__left__nav {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+}
+
+.Header__right__login {
+    border: 0;
+    cursor: pointer;
+    background: white;
+    padding-left: 2em;
+    padding-right: 2em;
+    outline: none;
+    font-size: 1em;
+}
+
+.Header__right__signup {
+    border: 0;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    background: blue;
+    text-transform: uppercase;
+    color: white;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    outline: none;
+}
+
+.Header__left__nav li {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
