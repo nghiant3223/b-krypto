@@ -2,13 +2,22 @@ import React, { PureComponent } from 'react';
 import Radio from '@material-ui/core/Radio';
 import PropTypes from 'prop-types';
 
+import { SERVER_URL } from '../../../configs/server.config';
+
 import './OptionsForm.css';
 
+
 class OptionsForm extends PureComponent {
+    onRefreshClick = () => {
+        if (!this.props.isIdle) alert('Sorry, we are processing');
+        else this.props.onRefreshClick();
+    }
+
     render() {
         return (
             <div className="OptionsForm">
                 <form>
+                    <div className="OptionsForm__RefreshButton" onClick={this.onRefreshClick}><img src="https://img.icons8.com/ios-glyphs/18/000000/synchronize.png" />Refresh</div>
 
                     <div className="OptionsForm__Title">Method</div>
                     <div className="OptionsForm__Type">
@@ -28,15 +37,15 @@ class OptionsForm extends PureComponent {
                                 checked={this.props.method === 1}
                                 onChange={e => this.props.onMethodChange(e)}
                                 value={1}
-                                name="radio-button-demo"
+                                name="radiop-button-decrypt"
                                 aria-label="B"
                                 color="primary"
                             /> <span >Decrypt</span >
                         </div>
                     </div>
 
-
                     <div className="OptionsForm__Title">Type</div>
+
                     <div className="OptionsForm__Type">
                         <div className="OptionsForm__Type--Left" >
                             <Radio
@@ -63,7 +72,11 @@ class OptionsForm extends PureComponent {
                 </form>
 
                 <div className="OptionsForm__SubmitButton">
-                    <button onClick={this.props.onUploadFormSubmit}>encrypt</button>
+                    {
+                        this.props.doneProcessing ?
+                            <button className="OptionsForm__SubmitButton--DownloadButton"><a href={`${SERVER_URL}/api/download/${this.props.compressedURL}`} target="_blank"></a>Download</button> :
+                            (<button onClick={this.props.onUploadFormSubmit}>{this.props.method === 0 ? "Encrypt" : "Decrypt"}</button>)
+                    }
                 </div>
             </div>
         );
@@ -73,7 +86,8 @@ class OptionsForm extends PureComponent {
 OptionsForm.propTypes = {
     type: PropTypes.number,
     onTypeChange: PropTypes.func.isRequired,
-    onUploadFormSubmit: PropTypes.func.isRequired
+    onUploadFormSubmit: PropTypes.func.isRequired,
+    onRefreshClick: PropTypes.func.isRequired
 };
 
 OptionsForm.defaultProps = {

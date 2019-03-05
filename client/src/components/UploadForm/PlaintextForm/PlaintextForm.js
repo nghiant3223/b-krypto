@@ -13,7 +13,7 @@ class PlaintextForm extends PureComponent {
                         <div className="UploadForm__IconContainer"><img src={plain} alt="File to encrypt" /></div>
                         <div className="UploadForm__FileName">{this.props.plaintextFileName || "Drop file to encrypt"}</div>
                     </div>
-                    <input type="file" name="plaintext" onChange={this.props.onPlaintextChange}/></label>
+                    <input type="file" name="plaintext" onChange={this.props.onPlaintextChange} onClick={e => e.target.value = null}/></label>
             </form>
         );
     }

@@ -39,7 +39,7 @@ export function encrypt(plaintext, key, algorithm, socket) {
             const index = parseInt(cipherSize * flags.length / plaintextFileSize, 10);
             if (!flags[index]) {
                 flags[index] = true;
-                socket.emit(sharedConstants.SERVER_SENDS_ENCRYPTION_PROGRESS);
+                socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
             }
         });
 

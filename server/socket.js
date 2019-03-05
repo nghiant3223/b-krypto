@@ -12,7 +12,6 @@ export default function (server) {
         console.log('A client connect to server');
 
         socket.on(sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL, ({ plaintext, key, algorithm }) => {
-            console.log('on encrypt');
             encrypt(plaintext, key, algorithm, socket);
         });
 

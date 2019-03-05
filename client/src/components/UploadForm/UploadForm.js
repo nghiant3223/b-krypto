@@ -11,6 +11,18 @@ import * as sharedConstants from '../../shares/constants';
 
 import './UploadForm.css';
 
+const refreshState = {
+    plaintextFile: undefined,
+    keyFile: undefined,
+    plaintextFileName: undefined,
+    keyFileName: undefined,
+    isUploading: false,
+    isProcessing: false,
+    compressedURL: undefined,
+    doneProcessing: false,
+    isIdle: true
+};
+
 class UploadForm extends Component {
     state = {
         type: 0,
@@ -21,14 +33,16 @@ class UploadForm extends Component {
         keyFileName: undefined,
         isUploading: false,
         isProcessing: false,
-        compressedURL: undefined
+        compressedURL: undefined,
+        doneProcessing: false,
+        isIdle: true
     }
 
     componentDidMount = () => {
         const socket = Socket.getInstance();
 
         socket.on(sharedConstants.SERVER_FINISHES_COMPRESSION, ({ fileName }) => {
-            this.setState({ compressedURL: fileName, isProcessing: false });
+            this.setState({ compressedURL: fileName, isProcessing: false, isUploading: false, doneProcessing: true, isIdle: true });
         });
     }
 
@@ -40,10 +54,16 @@ class UploadForm extends Component {
         this.setState({ method: parseInt(e.target.value) });
     }
 
+    onRefreshClick = () => {
+        this.setState({ ...refreshState });
+    }
+
     onUploadFormSubmit = async e => {
         e.preventDefault();
 
-        this.setState({ isUploading: true });
+        if (!this.state.plaintextFile || !this.state.keyFile) return;
+
+        this.setState({ isUploading: true, isIdle: false });
         try {
             const { data } = await uploadFiles(this.state.plaintextFile, this.state.keyFile);
             console.log(data);
@@ -52,10 +72,9 @@ class UploadForm extends Component {
 
             const socket = Socket.getInstance();
             socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_DECRYPTION_SIGNAL, { plaintext: data.plaintext.filename, key: data.key.filename, algorithm: 'aes-192-cbc' });
-            console.log('emit');
         } catch (e) {
             console.log(e);
-            this.setState({ isUploading: false });
+            this.setState({ isUploading: false, isIdle: true });
         }
     }
 
@@ -85,7 +104,7 @@ class UploadForm extends Component {
                 <ProgressBar
                     isUploading={this.state.isUploading}
                     onUploadFormSubmit={this.onUploadFormSubmit}
-                    isProcessing={this.state.isProcessing} />
+                    isProcessing={this.state.isProcessing}/>
                 
                 <div style={{ padding: '10px', zIndex: '10', position: 'relative' }}>
                     <div className="UploadForm">
@@ -95,7 +114,11 @@ class UploadForm extends Component {
                             onTypeChange={this.onTypeChange}
                             onUploadFormSubmit={this.onUploadFormSubmit}
                             type={this.state.type}
-                            method={this.state.method}/>
+                            method={this.state.method}
+                            doneProcessing={this.state.doneProcessing}
+                            onRefreshClick={this.onRefreshClick}
+                            isIdle={this.state.isIdle}
+                            compressedURL={this.state.compressedURL}/>
                         <PlaintextForm
                             onPlaintextChange={this.onPlaintextChange}
                             plaintextFileName={this.state.plaintextFileName} />

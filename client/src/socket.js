@@ -1,12 +1,12 @@
 import Socket from 'socket.io-client';
 
-import { SOCKET_PATH } from './configs/socket.config';
+import { SERVER_URL } from './configs/server.config';
 
 export default (function () {
     let instance;
 
     function getInstance() {
-        if (!instance) instance = Socket(SOCKET_PATH);
+        if (!instance) instance = Socket(SERVER_URL);
         return instance;
     }
 

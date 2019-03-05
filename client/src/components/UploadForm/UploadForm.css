@@ -1,7 +1,7 @@
 .UploadForm--Pseudo {
     flex: 1 1 0;
     border-radius: 5px;
-    background: #ffecb3;
+    background: #fff1c6;
     position: relative;
 }
 
@@ -9,6 +9,7 @@
     display: flex;
     min-height: 250px;
     color: #312d2d;
+    background: #ffecb3;
 }
 
 .UploadForm__Plaintext,

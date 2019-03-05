@@ -13,7 +13,7 @@ class KeyForm extends PureComponent {
                         <div className="UploadForm__IconContainer"><img src={secret} alt="File to encrypt" /></div>
                         <div className="UploadForm__FileName">{this.props.keyFileName || "Drop file as key"}</div>
                     </div>
-                    <input type="file" name="key" onChange={this.props.onKeyChange}/>
+                    <input type="file" name="key" onChange={this.props.onKeyChange} onClick={e => e.target.value = null}/>
                 </label>
             </form>
         );

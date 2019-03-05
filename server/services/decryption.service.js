@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 
+import * as sharedConstants from '../shares/constants';
+
 function getFileName(fullname) {
     const matches = /(.*)[.](.*)$/.exec(fullname);
     const fileName = matches ? matches[1] : fullname;
@@ -13,8 +15,6 @@ export function decrypt(ciphertext, key, algorithm, socket) {
     const rootDir = process.cwd();
     fs.readFile(path.join(rootDir, 'public', 'uploads', key), 'utf8', function (err, password) {
         if (err) throw err;
-
-        console.log(password);
 
         switch (algorithm) {
             case 'aes-192-cbc':
@@ -39,7 +39,7 @@ export function decrypt(ciphertext, key, algorithm, socket) {
             const index = parseInt(decipherSize * flags.length / ciphertextFileSize, 10);
             if (!flags[index]) {
                 flags[index] = true;
-                console.log('Emit');
+                socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
             }
         });
 
@@ -55,7 +55,7 @@ export function decrypt(ciphertext, key, algorithm, socket) {
             archive.finalize();
 
             compressedStream.on('close', async function () {
-                console.log('Data has been drained');
+                socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(ciphertext)}.zip` });
                 Promise.all([fs.unlinkSync(ciphertextFilePath), fs.unlinkSync(keyFilePath), fs.unlinkSync(plaintexFilePath)]);
             });
         });

@@ -13,9 +13,9 @@ class ProgressBar extends PureComponent {
     componentDidMount = () => {
         const socket = Socket.getInstance();
 
-        socket.on(sharedConstants.SERVER_SENDS_ENCRYPTION_PROGRESS, () => {
+        socket.on(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS, () => {
             this.setState(prevState => {
-                if (prevState.percentage + 5) return { percentage: prevState.percentage + 5 };
+                if (prevState.percentage + 5 < 100) return { percentage: prevState.percentage + 5 };
                 else return { percentage: 100 };
             });
         });
