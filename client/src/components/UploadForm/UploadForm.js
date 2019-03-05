@@ -121,10 +121,12 @@ class UploadForm extends Component {
                             compressedURL={this.state.compressedURL}/>
                         <PlaintextForm
                             onPlaintextChange={this.onPlaintextChange}
-                            plaintextFileName={this.state.plaintextFileName} />
+                            plaintextFileName={this.state.plaintextFileName}
+                            type={this.state.type}/>
                         <KeyForm
                             onKeyChange={this.onKeyChange}
-                            keyFileName={this.state.keyFileName} />
+                            keyFileName={this.state.keyFileName}
+                            type={this.state.type}/>
                         
                     </div>
                 </div>

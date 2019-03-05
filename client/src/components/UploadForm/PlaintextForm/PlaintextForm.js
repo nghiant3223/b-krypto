@@ -5,6 +5,22 @@ import './PlaintextForm.css';
 import plain from '../../../statics/images/folder.png';
 
 class PlaintextForm extends PureComponent {
+    constructor(props) {
+        super(props);
+
+        this.folderInput = (
+            <input type="file" name="plaintext" webkitdirectory="" mozdirectory="" msdirectory="" odirectory="" directory=""
+                onChange={this.props.onPlaintextChange}
+                onClick={e => e.target.value = null} />
+        );
+
+        this.fileInput = (
+            <input type="file" name="plaintext"
+                onChange={this.props.onPlaintextChange}
+                onClick={e => e.target.value = null} />
+        );
+    }
+
     render() {
         return (
             <form className="UploadForm__Plaintext">
@@ -13,7 +29,8 @@ class PlaintextForm extends PureComponent {
                         <div className="UploadForm__IconContainer"><img src={plain} alt="File to encrypt" /></div>
                         <div className="UploadForm__FileName">{this.props.plaintextFileName || "Drop file to encrypt"}</div>
                     </div>
-                    <input type="file" name="plaintext" onChange={this.props.onPlaintextChange} onClick={e => e.target.value = null}/></label>
+                    {this.props.type === 0 ? this.fileInput : this.folderInput}
+                    </label>
             </form>
         );
     }
