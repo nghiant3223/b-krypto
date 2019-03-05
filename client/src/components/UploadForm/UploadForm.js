@@ -26,17 +26,9 @@ const refreshState = {
 class UploadForm extends Component {
     state = {
         type: 0,
-        method: 0,  
-        plaintextFile: undefined,
-        keyFile: undefined,
-        plaintextFileName: undefined,
-        keyFileName: undefined,
-        isUploading: false,
-        isProcessing: false,
-        compressedURL: undefined,
-        doneProcessing: false,
-        isIdle: true
-    }
+        method: 0,
+        ...refreshState
+    };
 
     componentDidMount = () => {
         const socket = Socket.getInstance();
@@ -104,7 +96,8 @@ class UploadForm extends Component {
                 <ProgressBar
                     isUploading={this.state.isUploading}
                     onUploadFormSubmit={this.onUploadFormSubmit}
-                    isProcessing={this.state.isProcessing}/>
+                    isProcessing={this.state.isProcessing}
+                    isIdle={this.state.isIdle}/>
                 
                 <div style={{ padding: '10px', zIndex: '10', position: 'relative' }}>
                     <div className="UploadForm">
