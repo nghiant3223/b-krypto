@@ -1,7 +1,7 @@
 import socketIO from 'socket.io';
 
-import { aesEncrypt } from './services/encryption.service';
-import { aesDecrypt } from './services/decryption.service';
+import { aesEncrypt, camelliaEncrypt } from './services/encryption.service';
+import { aesDecrypt, camelliaDecrypt } from './services/decryption.service';
 
 import * as sharedConstants from './shares/constants';
 
@@ -18,7 +18,7 @@ export default function (server) {
                     break;
                 
                 case 'camellia':
-                    throw Error("Algorithm not supported!");
+                    camelliaEncrypt(plaintext, key, socket, options);
                     break;
                 
                 case 'aes':
@@ -37,7 +37,7 @@ export default function (server) {
                     break;
 
                 case 'camellia':
-                    throw Error("Algorithm not supported!");
+                    camelliaDecrypt(plaintext, key, socket, options);
                     break;
 
                 case 'aes':
