@@ -17,7 +17,7 @@ class OptionsForm extends PureComponent {
         return (
             <div className="OptionsForm">
                 <form>
-                    <div className="OptionsForm__RefreshButton" onClick={this.onRefreshClick}><img src="https://img.icons8.com/ios-glyphs/18/000000/synchronize.png" />Refresh</div>
+                    <div className="OptionsForm__RefreshButton" onClick={this.onRefreshClick}><img src="https://img.icons8.com/ios-glyphs/18/000000/synchronize.png" alt="Refresh icon"/>Refresh</div>
 
                     <div className="OptionsForm__Title">Method</div>
                     <div className="OptionsForm__Type">
@@ -74,7 +74,7 @@ class OptionsForm extends PureComponent {
                 <div className="OptionsForm__SubmitButton">
                     {
                         this.props.doneProcessing ?
-                            <button className="OptionsForm__SubmitButton--DownloadButton"><a href={`${SERVER_URL}/api/download/${this.props.compressedURL}`} target="_blank"></a>Download</button> :
+                            <button className="OptionsForm__SubmitButton--DownloadButton"><a rel="noopener noreferrer" href={`${SERVER_URL}/api/download/${this.props.compressedURL}`} target="_blank"></a>Download</button> :
                             (<button onClick={this.props.onUploadFormSubmit}>{this.props.method === 0 ? "Encrypt" : "Decrypt"}</button>)
                     }
                 </div>

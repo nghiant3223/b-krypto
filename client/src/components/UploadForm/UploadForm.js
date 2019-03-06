@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router';
 
 import ProgressBar from '../ProgressBar/ProgressBar';
 import OptionsForm from './OptionsForm/OptionsForm';
@@ -63,7 +64,8 @@ class UploadForm extends Component {
             this.setState({ isUploading: false, isProcessing: true });
 
             const socket = Socket.getInstance();
-            socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_DECRYPTION_SIGNAL, { plaintext: data.plaintext.filename, key: data.key.filename, algorithm: 'aes-192-cbc' });
+
+            socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_DECRYPTION_SIGNAL, { plaintext: data.plaintext.filename, key: data.key.filename, algorithm: this.props.location.pathname.slice(1) });
         } catch (e) {
             console.log(e);
             this.setState({ isUploading: false, isIdle: true });
@@ -128,4 +130,4 @@ class UploadForm extends Component {
     }
 }
 
-export default UploadForm;
+export default withRouter(UploadForm);

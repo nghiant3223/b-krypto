@@ -11,7 +11,7 @@ const Header = (props) => (
             <ul className="Header__left__nav">
                 <li><Link to="/rsa">RSA</Link></li>
                 <li><Link to="/aes">AES</Link></li>
-                <li><Link to="/2fish">Twofish</Link></li>
+                <li><Link to="/camellia">Camellia</Link></li>
                 <li><Link to="/why">Why?</Link></li>
             </ul>
         </div>
