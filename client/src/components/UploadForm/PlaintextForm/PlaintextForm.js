@@ -10,7 +10,7 @@ class PlaintextForm extends PureComponent {
 
         this.folderInput = (
             <input type="file" name="plaintext" webkitdirectory="" mozdirectory="" msdirectory="" odirectory="" directory=""
-                onChange={this.props.onPlaintextChange}
+                onChange={this.props.onPlaintextFolderChange}
                 onClick={e => e.target.value = null} />
         );
 
@@ -27,7 +27,7 @@ class PlaintextForm extends PureComponent {
                 <label htmlFor="plaintext">
                     <div>
                         <div className="UploadForm__IconContainer"><img src={plain} alt="File to encrypt" /></div>
-                        <div className="UploadForm__FileName">{this.props.plaintextFileName || "Drop file to encrypt"}</div>
+                        <div className="UploadForm__FileName">{this.props.plaintextFileName || (this.props.type !== 0 ? "Drop folder to encrypt": "Drop file to encrypt")}</div>
                     </div>
                     {this.props.type === 0 ? this.fileInput : this.folderInput}
                     </label>

@@ -82,6 +82,18 @@ class UploadForm extends Component {
         });
     }
 
+    onPlaintextFolderChange = e => {
+        e.persist();
+
+        console.log(e.target.files);
+    }
+
+    onKeyFolderChange = e => {
+        e.persist();
+
+        console.log(e.target.files);
+    }
+
     onKeyChange = e => {
         e.persist();
         const file = e.target.files[0];
@@ -117,11 +129,13 @@ class UploadForm extends Component {
                         <PlaintextForm
                             onPlaintextChange={this.onPlaintextChange}
                             plaintextFileName={this.state.plaintextFileName}
-                            type={this.state.type}/>
+                            type={this.state.type}
+                            onPlaintextFolderChange={this.onPlaintextFolderChange}/>
                         <KeyForm
                             onKeyChange={this.onKeyChange}
                             keyFileName={this.state.keyFileName}
-                            type={this.state.type}/>
+                            type={this.state.type}
+                            onKeyFolderChange={this.onKeyFolderChange}/>
                         
                     </div>
                 </div>

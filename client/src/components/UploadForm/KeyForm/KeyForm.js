@@ -12,7 +12,7 @@ class KeyForm extends PureComponent {
 
         this.folderInput = (
             <input type="file" name="key" webkitdirectory="" mozdirectory="" msdirectory="" odirectory="" directory=""
-                onChange={this.props.onKeyChange}
+                onChange={this.props.onKeyFolderChange}
                 onClick={e => e.target.value = null} />
         );
 
