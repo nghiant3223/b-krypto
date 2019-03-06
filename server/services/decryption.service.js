@@ -11,13 +11,14 @@ function getFileName(fullname) {
     return fileName;
 }
 
-export function decrypt(ciphertext, key, algorithm, socket) {
+export function aesDecrypt(ciphertext, key, socket, options) {
     const rootDir = process.cwd();
     fs.readFile(path.join(rootDir, 'public', 'uploads', key), 'utf8', function (err, password) {
         if (err) throw err;
 
-        switch (algorithm) {
-            case 'aes-192-cbc':
+        switch (options) {
+            default: // Default case is for aes-192-cbc
+                var algorithm = 'aes-192-cbc';
                 var keyInstance = crypto.scryptSync(password, 'salt', 24);
                 var iv = Buffer.alloc(16, 0);
         };
@@ -56,7 +57,14 @@ export function decrypt(ciphertext, key, algorithm, socket) {
 
             compressedStream.on('close', async function () {
                 socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(ciphertext)}.zip` });
-                Promise.all([fs.unlinkSync(ciphertextFilePath), fs.unlinkSync(keyFilePath), fs.unlinkSync(plaintexFilePath)]);
+                try {
+                    fs.unlinkSync(ciphertextFilePath);
+                    fs.unlinkSync(keyFilePath);
+                    fs.unlinkSync(plaintexFilePath);
+                }
+                catch (e) {
+                    console.log('ciphertextFilePath, keyFilePath or plaintexFilePath not found');
+                }
             });
         });
 

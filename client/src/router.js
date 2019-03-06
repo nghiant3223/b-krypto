@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage/HomePage';
 import RSAPage from './pages/RSAPage/RSAPage';
 import AESPage from './pages/AESPage/AESPage';
 import WhyPage from './pages/WhyPage/WhyPage';
-import TwofishPage from './pages/TwofishPage/TwofishPage';
+import CamelliaPage from './pages/CamelliaPage/CamelliaPage';
 
 
 export default function router({ isAuthenticated }) {
@@ -16,7 +16,7 @@ export default function router({ isAuthenticated }) {
                 <Switch>
                     <Route path='/rsa' component={RSAPage} />
                     <Route path='/aes' component={AESPage} />
-                    <Route path='/2fish' component={TwofishPage} />
+                    <Route path='/camellia' component={CamelliaPage} />
                     <Route path='/why' component={WhyPage} />
                     <Route path='/' exact component={HomePage} />
                 </Switch>

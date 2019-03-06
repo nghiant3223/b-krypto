@@ -21,7 +21,6 @@ class ProgressBar extends PureComponent {
 
         socket.on(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS, () => {
             this.setState(prevState => {
-                console.log(prevState.percentage);
                 if (prevState.percentage + 5 < 100) return { percentage: prevState.percentage + 5 };
                 else return { percentage: 100 };
             });
