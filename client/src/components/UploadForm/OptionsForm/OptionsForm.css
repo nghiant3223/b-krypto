@@ -30,6 +30,10 @@
     cursor: pointer;
 }
 
+.OptionsForm__RefreshButton:active {
+    color: black;
+}
+
 .OptionsForm__RefreshButton img {
     margin-right: 0.4em;
 }
@@ -62,7 +66,7 @@
 
 .OptionsForm__SubmitButton button {
     border: 0;
-    padding: 0.5em 1em;
+    padding: 0.25em 1em;
     cursor: pointer;
     background: #ffc400;
     text-transform: uppercase;
@@ -72,6 +76,13 @@
     font-weight: bold;
     outline: none;
     position: relative;
+    transition: opacity 0.25s ease;
+    opacity: 1;
+}
+
+.OptionsForm__SubmitButton button:hover {
+    opacity: 0.9;
+    background: #ffc400;
 }
 
 .OptionsForm__SubmitButton a {
@@ -86,4 +97,5 @@
 .OptionsForm__SubmitButton--DownloadButton {
     background: #1a237e !important;
     color: white !important;
+    padding: 0.5rem 0.75rem !important;
 }

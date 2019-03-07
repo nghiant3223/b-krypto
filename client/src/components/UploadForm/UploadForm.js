@@ -31,12 +31,8 @@ class UploadForm extends Component {
         ...refreshState
     };
 
-    componentDidMount = () => {
-        const socket = Socket.getInstance();
-
-        socket.on(sharedConstants.SERVER_FINISHES_COMPRESSION, ({ fileName }) => {
-            this.setState({ compressedURL: fileName, isProcessing: false, isUploading: false, doneProcessing: true, isIdle: true });
-        });
+    finishTransaction = fileName => {
+        this.setState({ compressedURL: fileName, isProcessing: false, isUploading: false, doneProcessing: true, isIdle: true });
     }
 
     onTypeChange = e => {
@@ -111,7 +107,8 @@ class UploadForm extends Component {
                     isUploading={this.state.isUploading}
                     onUploadFormSubmit={this.onUploadFormSubmit}
                     isProcessing={this.state.isProcessing}
-                    isIdle={this.state.isIdle}/>
+                    isIdle={this.state.isIdle}
+                    finishTransaction={this.finishTransaction}/ >
                 
                 <div style={{ padding: '10px', zIndex: '10', position: 'relative' }}>
                     <div className="UploadForm">

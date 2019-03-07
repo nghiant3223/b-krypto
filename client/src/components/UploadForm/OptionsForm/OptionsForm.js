@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import Radio from '@material-ui/core/Radio';
 import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
+
 
 import { SERVER_URL } from '../../../configs/server.config';
 
@@ -75,7 +77,7 @@ class OptionsForm extends PureComponent {
                     {
                         this.props.doneProcessing ?
                             <button className="OptionsForm__SubmitButton--DownloadButton"><a rel="noopener noreferrer" href={`${SERVER_URL}/api/download/${this.props.compressedURL}`} target="_blank"></a>Download</button> :
-                            (<button onClick={this.props.onUploadFormSubmit}>{this.props.method === 0 ? "Encrypt" : "Decrypt"}</button>)
+                            (<Button onClick={this.props.onUploadFormSubmit}>{this.props.method === 0 ? "Encrypt" : "Decrypt"}</Button>)
                     }
                 </div>
             </div>
