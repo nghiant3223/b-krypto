@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
 
 import ProgressBar from '../ProgressBar/ProgressBar';
 import OptionsForm from './OptionsForm/OptionsForm';
@@ -9,6 +9,7 @@ import KeyForm from './KeyForm/KeyForm';
 import { uploadFiles } from '../../services/file.service';
 import Socket from '../../socket';
 import * as sharedConstants from '../../shares/constants';
+import * as uiActions from '../../actions/ui.action';
 
 import './UploadForm.css';
 
@@ -33,6 +34,12 @@ class UploadForm extends Component {
 
     finishTransaction = fileName => {
         this.setState({ compressedURL: fileName, isProcessing: false, isUploading: false, doneProcessing: true, isIdle: true });
+
+        this.props.openSnackbar({ type: 'success', content: 'Done' });
+        
+        setTimeout(() => {
+            this.props.closeSnackbar();
+        }, 3000);
     }
 
     onTypeChange = e => {
@@ -55,13 +62,12 @@ class UploadForm extends Component {
         this.setState({ isUploading: true, isIdle: false });
         try {
             const { data } = await uploadFiles(this.state.plaintextFile, this.state.keyFile);
-            console.log(data);
 
             this.setState({ isUploading: false, isProcessing: true });
 
             const socket = Socket.getInstance();
 
-            socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_DECRYPTION_SIGNAL, { plaintext: data.plaintext.filename, key: data.key.filename, algorithm: this.props.location.pathname.slice(1) });
+            socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_DECRYPTION_SIGNAL, { plaintext: data.plaintext.filename, key: data.key.filename, algorithm: this.props.algorithm});
         } catch (e) {
             console.log(e);
             this.setState({ isUploading: false, isIdle: true });
@@ -108,7 +114,7 @@ class UploadForm extends Component {
                     onUploadFormSubmit={this.onUploadFormSubmit}
                     isProcessing={this.state.isProcessing}
                     isIdle={this.state.isIdle}
-                    finishTransaction={this.finishTransaction}/ >
+                    finishTransaction={this.finishTransaction}/>
                 
                 <div style={{ padding: '10px', zIndex: '10', position: 'relative' }}>
                     <div className="UploadForm">
@@ -141,4 +147,9 @@ class UploadForm extends Component {
     }
 }
 
-export default withRouter(UploadForm);
+const mapDispatchToProps = dispatch => ({
+    openSnackbar: snackbarInfo => dispatch(uiActions.openSnackbar(snackbarInfo)),
+    closeSnackbar: _ => dispatch(uiActions.closeSnackbar())
+});
+
+export default connect(null, mapDispatchToProps)(UploadForm);

@@ -1,7 +1,8 @@
 import * as actionTypes from '../constants/actionTypes';
 
 const initialState = {
-    currentModal: null
+    currentModal: undefined,
+    currentSnackbar: undefined
 };
 
 export default function uiReducer(state = initialState, action) {
@@ -10,7 +11,13 @@ export default function uiReducer(state = initialState, action) {
             return { ...state, currentModal: action.payload };
         
         case actionTypes.CLOSE_MODAL:
-            return { ...state, currentModal: null };
+            return { ...state, currentModal: undefined };
+        
+        case actionTypes.OPEN_SNACKBAR:
+            return { ...state, currentSnackbar: action.payload };
+        
+        case actionTypes.CLOSE_SNACKBAR:
+            return { ...state, currentSnackbar: undefined };
         
         default:
             return state;
