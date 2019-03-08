@@ -10,6 +10,12 @@ class ProgressBar extends PureComponent {
         percentage: 0
     }
 
+    componentDidUpdate = prevProps => {
+        if (this.props.isIdle && !prevProps.isIdle) {
+            this.setState({ percentage: 0 });
+        }
+    }
+
     componentDidMount = () => {
         const socket = Socket.getInstance();
 

@@ -1,7 +1,7 @@
 import socketIO from 'socket.io';
 
-import { aesEncrypt, camelliaEncrypt, aesFolderEncrypt } from './services/encryption.service';
-import { aesDecrypt, camelliaDecrypt, aesFolderDecrypt } from './services/decryption.service';
+import { aesEncrypt, camelliaEncrypt, aesFolderEncrypt, camelliaFolderEncrypt } from './services/encryption.service';
+import { aesDecrypt, camelliaDecrypt, aesFolderDecrypt, camelliaFolderDecrypt } from './services/decryption.service';
 
 import * as sharedConstants from './shares/constants';
 
@@ -60,7 +60,6 @@ export default function (server) {
                     break;
 
                 case 'aes':
-                    console.log('here');
                     aesFolderEncrypt(plaintext, key, socket, options);
                     break;
 
