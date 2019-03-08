@@ -45,6 +45,7 @@ export function aesDecrypt(ciphertext, key, socket, options) {
         });
 
         plaintextFileStream.on('finish', function () {
+
             const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(ciphertext)}.zip`));
             const archive = archiver('zip', { zlib: { level: 9 } });
 
@@ -130,5 +131,63 @@ export function camelliaDecrypt(ciphertext, key, socket, options) {
         });
 
         ciphertextFileStream.pipe(decipher).pipe(plaintextFileStream);
+    });
+}
+
+export function aesFolderDecrypt(plaintext, key, socket, options) {
+    const rootDir = process.cwd();
+    const keyFilePath = path.join(rootDir, 'public', 'uploads', plaintext, key);
+    const folderPath = path.join(rootDir, 'public', 'uploads', plaintext);
+    const inputEncoding = "utf8";
+    const outputEncoding = "uft8";
+
+    fs.readFile(keyFilePath, 'utf8', function (err, password) {
+        if (err) throw err;
+
+        console.log(password);
+
+        switch (options) {
+            default: // Default case is for aes-192-cbc
+                var algorithm = 'aes-192-cbc';
+                var key = crypto.scryptSync(password, 'salt', 24);
+                var iv = Buffer.alloc(16, 0);
+        };
+    
+        fs.readdir(folderPath, function (err, files) {
+            if (err) throw err;
+
+            let percentage = 0;
+            for (let file of files) {
+                if (file !== key) {
+                    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+                    const plaintextFilePath = path.join(rootDir, 'public', 'uploads', plaintext, file);
+                    const encryptedFilePath = path.join(rootDir, 'public', 'uploads', plaintext, getFileName(file));
+                    const decrypted = decipher.update(fs.readFileSync(plaintextFilePath, {encoding: 'hex'}), 'hex', 'utf8') + decipher.final('utf8');
+                    
+                    fs.writeFileSync(encryptedFilePath, decrypted, { encoding: 'utf8' });
+                    fs.unlinkSync(plaintextFilePath);
+                    for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5)
+                        socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
+                    percentage += 95 / (files.length - 1);
+                }
+            }
+
+            // socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
+
+            // const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(plaintext)}.zip`));
+            // const archive = archiver('zip', { zlib: { level: 9 } });
+
+            // archive.pipe(compressedStream);
+            // archive.directory(folderPath, false);
+            // archive.finalize();
+
+            // compressedStream.on('close', async function () {
+            //     // socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(plaintext)}.zip` });
+
+            //     rimraf(folderPath, function (err) {
+            //         if (err) console.log(err);
+            //     });
+            // });
+        });
     });
 }
