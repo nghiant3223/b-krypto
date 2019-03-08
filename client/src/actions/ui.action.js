@@ -12,3 +12,17 @@ export function openModal(modalType) {
         payload: modalType
     };
 }
+
+export function openSnackbar(snackbarInfo) {
+    return {
+        type: actionTypes.OPEN_SNACKBAR,
+        payload: snackbarInfo
+    };
+}
+
+export function closeSnackbar(snackbarInfo) {
+    return {
+        type: actionTypes.CLOSE_SNACKBAR,
+        payload: snackbarInfo
+    };
+}

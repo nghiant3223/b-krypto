@@ -26,7 +26,8 @@ a {
   color: black;
 }
 
-button {
+button,
+button span {
   font-family: "Source Sans Pro",
   -apple-system,
   BlinkMacSystemFont,

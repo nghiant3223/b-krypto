@@ -6,7 +6,7 @@ const AESPage = (props) => (
         <p className="AlgorithmPage__Title">AES Algorithm</p>
         <p className="AlgorithmPage__Subtitle">A popular and widely adopted symmetric encryption algorithm. <b>3x</b> faster than DES!</p>
         <div className="AlgorithmPage__Main">
-            <UploadForm />
+            <UploadForm algorithm="aes"/>
         </div>
     </div>)
 

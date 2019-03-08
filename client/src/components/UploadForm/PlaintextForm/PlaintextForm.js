@@ -27,7 +27,7 @@ class PlaintextForm extends PureComponent {
                 <label htmlFor="plaintext">
                     <div>
                         <div className="UploadForm__IconContainer"><img src={plain} alt="File to encrypt" /></div>
-                        <div className="UploadForm__FileName">{this.props.plaintextFileName || this.props.plaintextFolderName || (this.props.type !== 0 ? "Drop folder to encrypt": "Drop file to encrypt")}</div>
+                        <div className="UploadForm__FileName">{this.props.plaintextFileName || this.props.plaintextFolderName || (this.props.type !== 0 ? `Drop folder to ${this.props.method === 0 ? "encrypt" : "decrypt"}`: `Drop file to ${this.props.method === 0 ? "encrypt" : "decrypt"}`)}</div>
                     </div>
                     {this.props.type === 0 ? this.fileInput : this.folderInput}
                     </label>

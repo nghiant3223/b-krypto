@@ -10,24 +10,26 @@ class ProgressBar extends PureComponent {
         percentage: 0
     }
 
-    componentDidUpdate = (prevProps, prevState) => {
-        if (!prevProps.idIdle && this.props.isIdle) {
-            this.setState({ percentage: 0 });
-        }
-    }
-
     componentDidMount = () => {
         const socket = Socket.getInstance();
 
         socket.on(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS, () => {
             this.setState(prevState => {
-                if (prevState.percentage + 5 < 100) return { percentage: prevState.percentage + 5 };
-                else return { percentage: 100 };
+                if (prevState.percentage + 5 <= 95) return { percentage: prevState.percentage + 5 };
+                else return { percentage: 95 };
             });
         });
 
         socket.on(sharedConstants.SERVER_FINISHES_ENCRYPTION, () => {
+            this.setState({ percentage: 95 });
+        });
+
+        socket.on(sharedConstants.SERVER_FINISHES_COMPRESSION, ({ fileName }) => {
             this.setState({ percentage: 100 });
+
+            setTimeout(() => {
+                this.props.finishTransaction(fileName);
+            }, 1000);
         });
     }
 

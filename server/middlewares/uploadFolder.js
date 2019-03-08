@@ -6,7 +6,6 @@ import fs from 'fs';
 export const uploadFolder = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
-            console.log(req.hashedFolderName);
             cb(null, `public/uploads/${req.hashedFolderName}/`);
         },
         filename: function (req, file, cb) {

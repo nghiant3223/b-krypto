@@ -7,7 +7,8 @@ import path from 'path';
 import initDatabase from './libs/Database';
 import apiRouter from './routes/api';
 import socketIO from './socket';
-import './test/folder.encryption.test';
+
+import './test/decrypt.test';
 
 const app = express();
 

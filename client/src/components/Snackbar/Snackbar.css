@@ -1,0 +1,37 @@
+.Snackbar {
+    position: fixed;
+    background: #43a047;
+    color: #fff;
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0px 6px 10px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+    font-size: 16px;
+    padding: 0.75em 1em;
+    border-radius: 3px;
+    transition: all 0.5s ease;
+}
+
+.Snackbar--Open {
+    bottom: 10px;
+    left: 15px;
+}
+
+.Snackbar--Close {
+    bottom: -100%;
+    left: 15px;
+}
+
+.Snackbar__Content {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.Snackbar__Content svg {
+    width: 1em;
+    height: 1em;
+    fill: #fff;
+    color: #43a047;
+    font-size: 20px;
+    margin-right: 5px;
+}

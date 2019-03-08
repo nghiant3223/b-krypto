@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
+import rimraf from 'rimraf';
 
 import * as sharedConstants from '../shares/constants';
 
@@ -45,7 +46,9 @@ export function aesDecrypt(ciphertext, key, socket, options) {
         });
 
         plaintextFileStream.on('finish', function () {
+            socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
 
+            
             const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(ciphertext)}.zip`));
             const archive = archiver('zip', { zlib: { level: 9 } });
 
@@ -107,6 +110,8 @@ export function camelliaDecrypt(ciphertext, key, socket, options) {
         });
 
         plaintextFileStream.on('finish', function () {
+            socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
+
             const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(ciphertext)}.zip`));
             const archive = archiver('zip', { zlib: { level: 9 } });
 
@@ -138,18 +143,14 @@ export function aesFolderDecrypt(plaintext, key, socket, options) {
     const rootDir = process.cwd();
     const keyFilePath = path.join(rootDir, 'public', 'uploads', plaintext, key);
     const folderPath = path.join(rootDir, 'public', 'uploads', plaintext);
-    const inputEncoding = "utf8";
-    const outputEncoding = "uft8";
 
     fs.readFile(keyFilePath, 'utf8', function (err, password) {
         if (err) throw err;
 
-        console.log(password);
-
         switch (options) {
             default: // Default case is for aes-192-cbc
                 var algorithm = 'aes-192-cbc';
-                var key = crypto.scryptSync(password, 'salt', 24);
+                var keyInstance = crypto.scryptSync(password, 'salt', 24);
                 var iv = Buffer.alloc(16, 0);
         };
     
@@ -157,37 +158,45 @@ export function aesFolderDecrypt(plaintext, key, socket, options) {
             if (err) throw err;
 
             let percentage = 0;
-            for (let file of files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                            console.log('...',key, file, files[0]);
+
                 if (file !== key) {
-                    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+                    const decipher = crypto.createDecipheriv(algorithm, keyInstance, iv);
                     const plaintextFilePath = path.join(rootDir, 'public', 'uploads', plaintext, file);
-                    const encryptedFilePath = path.join(rootDir, 'public', 'uploads', plaintext, getFileName(file));
-                    const decrypted = decipher.update(fs.readFileSync(plaintextFilePath, {encoding: 'hex'}), 'hex', 'utf8') + decipher.final('utf8');
+                    const encryptedFilePath = path.join(rootDir, 'public', 'uploads', plaintext, `${getFileName(file)}.dec`);
+                    let decrypted = decipher.update(fs.readFileSync(plaintextFilePath, { encoding: 'hex' }), 'hex', 'utf8');
+                    decrypted += decipher.final('utf8');
                     
                     fs.writeFileSync(encryptedFilePath, decrypted, { encoding: 'utf8' });
                     fs.unlinkSync(plaintextFilePath);
-                    for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5)
+                    for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
                         socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
+
+                     }
                     percentage += 95 / (files.length - 1);
                 }
             }
 
-            // socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
+            socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
 
-            // const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(plaintext)}.zip`));
-            // const archive = archiver('zip', { zlib: { level: 9 } });
+            const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(plaintext)}.zip`));
+            const archive = archiver('zip', { zlib: { level: 9 } });
 
-            // archive.pipe(compressedStream);
-            // archive.directory(folderPath, false);
-            // archive.finalize();
+            console.log('this');
+            archive.pipe(compressedStream);
+            archive.directory(folderPath, false);
+            archive.finalize();
 
-            // compressedStream.on('close', async function () {
-            //     // socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(plaintext)}.zip` });
+            compressedStream.on('close', async function () {
+                socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(plaintext)}.zip` });
 
-            //     rimraf(folderPath, function (err) {
-            //         if (err) console.log(err);
-            //     });
-            // });
+                console.log('that');
+                rimraf(folderPath, function (err) {
+                    if (err) console.log(err);
+                });
+            });
         });
     });
 }

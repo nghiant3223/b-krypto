@@ -147,6 +147,8 @@ export function aesFolderEncrypt(plaintext, key, socket, options) {
         switch (options) {
             default: // Default case is for aes-192-cbc
                 var algorithm = 'aes-192-cbc';
+                var keyInstance = crypto.scryptSync(password, 'salt', 24);
+                var iv = Buffer.alloc(16, 0); // Initialization vector.
         };
     
         fs.readdir(folderPath, function (err, files) {
@@ -157,24 +159,23 @@ export function aesFolderEncrypt(plaintext, key, socket, options) {
                 if (file !== key) {
                     const plaintextFilePath = path.join(rootDir, 'public', 'uploads', plaintext, file);
                     const encryptedFilePath = path.join(rootDir, 'public', 'uploads', plaintext, `${file}.enc`);
-
-                    const keyInstance = crypto.scryptSync(password, 'salt', 24);
-                    const iv = Buffer.alloc(16, 0); // Initialization vector.
                     const cipher = crypto.createCipheriv(algorithm, keyInstance, iv);
-
                     let encrypted = cipher.update(fs.readFileSync(plaintextFilePath, {encoding: 'utf8'}), 'utf8', 'hex');
                     encrypted += cipher.final('hex');
+                    
                     fs.writeFileSync(encryptedFilePath, encrypted, { encoding: 'hex' });
                     fs.unlinkSync(plaintextFilePath);
+                    for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
+                        socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
 
-                    for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5)
-                        undefined;
-                    // socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
+                    }
                     percentage += 95 / (files.length - 1);
                 }
             }
 
-            // socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
+            console.log('here');
+
+            socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
 
             const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(plaintext)}.zip`));
             const archive = archiver('zip', { zlib: { level: 9 } });
@@ -184,7 +185,7 @@ export function aesFolderEncrypt(plaintext, key, socket, options) {
             archive.finalize();
 
             compressedStream.on('close', async function () {
-                // socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(plaintext)}.zip` });
+                socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(plaintext)}.zip` });
 
                 rimraf(folderPath, function (err) {
                     if (err) console.log(err);
@@ -194,64 +195,3 @@ export function aesFolderEncrypt(plaintext, key, socket, options) {
     });
 }
 
-export function aesFolderDecrypt(plaintext, key, socket, options) {
-    const rootDir = process.cwd();
-    const keyFilePath = path.join(rootDir, 'public', 'uploads', plaintext, key);
-    const folderPath = path.join(rootDir, 'public', 'uploads', plaintext);
-    const inputEncoding = "utf8";
-    const outputEncoding = "uft8";
-
-    fs.readFile(keyFilePath, 'utf8', function (err, password) {
-        if (err) throw err;
-
-        console.log(password);
-
-        switch (options) {
-            default: // Default case is for aes-192-cbc
-                var algorithm = 'aes-192-cbc';
-        };
-    
-        fs.readdir(folderPath, function (err, files) {
-            if (err) throw err;
-
-            let percentage = 0;
-            for (let file of files) {
-                if (file !== key) {
-                    console.log(file);
-                    const key = crypto.scryptSync(password, 'salt', 24);
-                    // The IV is usually passed along with the ciphertext.
-                    const iv = Buffer.alloc(16, 0); // Initialization vector.
-                    const decipher = crypto.createDecipheriv(algorithm, key, iv);
-                    const plaintextFilePath = path.join(rootDir, 'public', 'uploads', plaintext, file);
-                    const encryptedFilePath = path.join(rootDir, 'public', 'uploads', plaintext, `${file}.enc`);
-                    let decrypted = decipher.update(fs.readFileSync(plaintextFilePath, {encoding: 'hex'}), 'hex', 'utf8');
-                    decrypted += decipher.final('utf8');
-                    fs.writeFileSync(encryptedFilePath, decrypted, { encoding: 'utf8' });
-                    // fs.unlinkSync(plaintextFilePath);
-
-                    for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5)
-                        undefined;
-                    // socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
-                    percentage += 95 / (files.length - 1);
-                }
-            }
-
-            // socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
-
-            // const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(plaintext)}.zip`));
-            // const archive = archiver('zip', { zlib: { level: 9 } });
-
-            // archive.pipe(compressedStream);
-            // archive.directory(folderPath, false);
-            // archive.finalize();
-
-            // compressedStream.on('close', async function () {
-            //     // socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(plaintext)}.zip` });
-
-            //     rimraf(folderPath, function (err) {
-            //         if (err) console.log(err);
-            //     });
-            // });
-        });
-    });
-}

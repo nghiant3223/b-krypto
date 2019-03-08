@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
 
 import ProgressBar from '../ProgressBar/ProgressBar';
 import OptionsForm from './OptionsForm/OptionsForm';
@@ -9,6 +9,7 @@ import KeyForm from './KeyForm/KeyForm';
 import { uploadFiles, uploadFolders } from '../../services/file.service';
 import Socket from '../../socket';
 import * as sharedConstants from '../../shares/constants';
+import * as uiActions from '../../actions/ui.action';
 
 import './UploadForm.css';
 
@@ -33,12 +34,14 @@ class UploadForm extends Component {
         ...refreshState
     };
 
-    componentDidMount = () => {
-        const socket = Socket.getInstance();
+    finishTransaction = fileName => {
+        this.setState({ compressedURL: fileName, isProcessing: false, isUploading: false, doneProcessing: true, isIdle: true });
 
-        socket.on(sharedConstants.SERVER_FINISHES_COMPRESSION, ({ fileName }) => {
-            this.setState({ compressedURL: fileName, isProcessing: false, isUploading: false, doneProcessing: true, isIdle: true });
-        });
+        this.props.openSnackbar({ type: 'success', content: `${this.props.type == 0 ? "File" : "Folder"} ${ this.props.method === 0 ? "encryption" : "decryption"} done` });
+        
+        setTimeout(() => {
+            this.props.closeSnackbar();
+        }, 3000);
     }
 
     onTypeChange = e => {
@@ -68,8 +71,10 @@ class UploadForm extends Component {
 
             const socket = Socket.getInstance();
 
-            if (this.state.type === 0) socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_DECRYPTION_SIGNAL, { plaintext: data.plaintext.filename, key: data.key.filename, algorithm: this.props.location.pathname.slice(1) });
-            if (this.state.type === 1) socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_FOLDER_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_FOLDER_ENCRYPTION_SIGNAL, { plaintext: data.plaintext.foldername, key: data.key.filename, algorithm: this.props.location.pathname.slice(1) });
+            if (this.state.type === 0) socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_DECRYPTION_SIGNAL, { plaintext: data.plaintext.filename, key: data.key.filename, algorithm: this.props.algorithm });
+            console.log('here');
+            if (this.state.type === 1) socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_FOLDER_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_FOLDER_DECRYPTION_SIGNAL, { plaintext: data.plaintext.foldername, key: data.key.filename, algorithm: this.props.algorithm });
+            console.log('after here');
         } catch (e) {
             console.log(e);
             this.setState({ isUploading: false, isIdle: true });
@@ -121,7 +126,8 @@ class UploadForm extends Component {
                     isUploading={this.state.isUploading}
                     onUploadFormSubmit={this.onUploadFormSubmit}
                     isProcessing={this.state.isProcessing}
-                    isIdle={this.state.isIdle}/>
+                    isIdle={this.state.isIdle}
+                    finishTransaction={this.finishTransaction}/>
                 
                 <div style={{ padding: '10px', zIndex: '10', position: 'relative' }}>
                     <div className="UploadForm">
@@ -141,7 +147,8 @@ class UploadForm extends Component {
                             plaintextFileName={this.state.plaintextFileName}
                             plaintextFolderName={this.state.plaintextFolderName}
                             type={this.state.type}
-                            onPlaintextFolderChange={this.onPlaintextFolderChange}/>
+                            onPlaintextFolderChange={this.onPlaintextFolderChange}
+                            method={this.state.method}/>
                         <KeyForm
                             onKeyChange={this.onKeyChange}
                             keyFileName={this.state.keyFileName}/>
@@ -153,4 +160,9 @@ class UploadForm extends Component {
     }
 }
 
-export default withRouter(UploadForm);
+const mapDispatchToProps = dispatch => ({
+    openSnackbar: snackbarInfo => dispatch(uiActions.openSnackbar(snackbarInfo)),
+    closeSnackbar: _ => dispatch(uiActions.closeSnackbar())
+});
+
+export default connect(null, mapDispatchToProps)(UploadForm);
