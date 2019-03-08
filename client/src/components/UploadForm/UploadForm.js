@@ -6,7 +6,7 @@ import OptionsForm from './OptionsForm/OptionsForm';
 import PlaintextForm from './PlaintextForm/PlaintextForm';
 import KeyForm from './KeyForm/KeyForm';
 
-import { uploadFiles } from '../../services/file.service';
+import { uploadFiles, uploadFolders } from '../../services/file.service';
 import Socket from '../../socket';
 import * as sharedConstants from '../../shares/constants';
 
@@ -15,8 +15,10 @@ import './UploadForm.css';
 const refreshState = {
     plaintextFile: undefined,
     keyFile: undefined,
+    filesInPlaintextFolder: undefined,
     plaintextFileName: undefined,
     keyFileName: undefined,
+    plaintextFolderName: undefined,
     isUploading: false,
     isProcessing: false,
     compressedURL: undefined,
@@ -26,7 +28,7 @@ const refreshState = {
 
 class UploadForm extends Component {
     state = {
-        type: 0,
+        type: 1,
         method: 0,
         ...refreshState
     };
@@ -54,18 +56,20 @@ class UploadForm extends Component {
     onUploadFormSubmit = async e => {
         e.preventDefault();
 
-        if (!this.state.plaintextFile || !this.state.keyFile) return;
+        if (this.state.type === 0 && (!this.state.plaintextFile || !this.state.keyFile)) return;
+        if (this.state.type === 1 && (!this.state.filesInPlaintextFolder || !this.state.keyFile)) return;
 
         this.setState({ isUploading: true, isIdle: false });
         try {
-            const { data } = await uploadFiles(this.state.plaintextFile, this.state.keyFile);
-            console.log(data);
+
+            const { data } = this.state.type === 0 ? await uploadFiles(this.state.plaintextFile, this.state.keyFile) : await uploadFolders(this.state.filesInPlaintextFolder, this.state.keyFile);
 
             this.setState({ isUploading: false, isProcessing: true });
 
             const socket = Socket.getInstance();
 
-            socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_DECRYPTION_SIGNAL, { plaintext: data.plaintext.filename, key: data.key.filename, algorithm: this.props.location.pathname.slice(1) });
+            if (this.state.type === 0) socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_DECRYPTION_SIGNAL, { plaintext: data.plaintext.filename, key: data.key.filename, algorithm: this.props.location.pathname.slice(1) });
+            if (this.state.type === 1) socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_FOLDER_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_FOLDER_ENCRYPTION_SIGNAL, { plaintext: data.plaintext.foldername, key: data.key.filename, algorithm: this.props.location.pathname.slice(1) });
         } catch (e) {
             console.log(e);
             this.setState({ isUploading: false, isIdle: true });
@@ -75,7 +79,7 @@ class UploadForm extends Component {
     onPlaintextChange = e => {
         e.persist();
         const file = e.target.files[0];
-
+        console.log(file);
         this.setState({
             plaintextFile: file,
             plaintextFileName: file.name
@@ -84,8 +88,14 @@ class UploadForm extends Component {
 
     onPlaintextFolderChange = e => {
         e.persist();
+        const files = e.target.files;
 
-        console.log(e.target.files);
+        console.log(files[0]);
+
+        this.setState({
+            filesInPlaintextFolder: files,
+            plaintextFolderName: /(.*)\/(.*$)/.exec(files[0].webkitRelativePath)[1]
+        });
     }
 
     onKeyFolderChange = e => {
@@ -129,13 +139,12 @@ class UploadForm extends Component {
                         <PlaintextForm
                             onPlaintextChange={this.onPlaintextChange}
                             plaintextFileName={this.state.plaintextFileName}
+                            plaintextFolderName={this.state.plaintextFolderName}
                             type={this.state.type}
                             onPlaintextFolderChange={this.onPlaintextFolderChange}/>
                         <KeyForm
                             onKeyChange={this.onKeyChange}
-                            keyFileName={this.state.keyFileName}
-                            type={this.state.type}
-                            onKeyFolderChange={this.onKeyFolderChange}/>
+                            keyFileName={this.state.keyFileName}/>
                         
                     </div>
                 </div>
