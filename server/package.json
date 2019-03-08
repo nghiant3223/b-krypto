@@ -4,9 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec babel-node app.js --ignore public/uploads/",
-    "start": "babel-node app.js"
+    "start": "babel-node app.js",
+    "test": "babel-node test/folder.encryption.test.js"
   },
   "author": "",
   "license": "ISC",

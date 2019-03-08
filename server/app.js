@@ -7,6 +7,7 @@ import path from 'path';
 import initDatabase from './libs/Database';
 import apiRouter from './routes/api';
 import socketIO from './socket';
+import './test/folder.encryption.test';
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use('/api', apiRouter);
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
 
+    console.log(err);
     if (err.message) {
         res.send(err);
     } else {

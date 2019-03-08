@@ -132,3 +132,37 @@ export function camelliaEncrypt(plaintext, key, socket, options) {
         plaintextFileStream.pipe(cipher).pipe(encryptedFileStream);
     });
 }
+
+export function aesFolderEncrypt(plaintext, key, socket, options) {
+    const rootDir = process.cwd();
+    const keyFilePath = path.join(rootDir, 'public', 'uploads', plaintext, key);
+    const folderPath = path.join(rootDir, 'public', 'uploads', plaintext);
+    fs.readFile(keyFilePath, 'utf8', function (err, password) {
+        if (err) throw err;
+
+        switch (options) {
+            default: // Default case is for aes-192-cbc
+                var algorithm = 'aes-192-cbc';
+        };
+
+        const flags = new Array(20).fill(false, 0, 20);
+
+
+        const inputEncoding = "utf8";
+        const outputEncoding = "hex";
+    
+        fs.readdir(folderPath, function (err, files) {
+            if (err) throw err;
+
+            for (let file of files) {
+                const plaintextFilePath = path.join(rootDir, 'public', 'uploads', plaintext, file);
+                const encryptedFilePath = path.join(rootDir, 'public', 'uploads', plaintext, `${file}.enc`);
+                const cipher = crypto.createCipher(algorithm, password);
+                const ciphered = cipher.update(fs.readFileSync(plaintextFilePath), inputEncoding, outputEncoding) + cipher.final(outputEncoding);
+                
+                fs.writeFileSync(encryptedFilePath, ciphered)
+            }
+        })
+    });
+
+}

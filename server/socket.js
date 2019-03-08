@@ -48,5 +48,24 @@ export default function (server) {
                     aesDecrypt(plaintext, key, socket, options);
             }
         });
+
+        socket.on(sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL, ({ plaintext, key, algorithm, options }) => {
+            switch (algorithm) {
+                case 'rsa':
+                    throw Error("Algorithm not supported!");
+                    break;
+
+                case 'camellia':
+                    camelliaFolderEncrypt(plaintext, key, socket, options);
+                    break;
+
+                case 'aes':
+                    aesFolderEncrypt(plaintext, key, socket, options);
+                    break;
+
+                default: // Default case is for aes-192-cbc
+                    aesFolderEncrypt(plaintext, key, socket, options);
+            }
+        });
     });
 };
