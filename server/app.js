@@ -8,8 +8,6 @@ import initDatabase from './libs/Database';
 import apiRouter from './routes/api';
 import socketIO from './socket';
 
-import './test/decrypt.test';
-
 const app = express();
 
 global.rootDir = path.resolve(__dirname);

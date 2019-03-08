@@ -34,6 +34,18 @@ class UploadForm extends Component {
         ...refreshState
     };
 
+    componentDidMount = () => {
+        const socket = Socket.getInstance();
+
+        socket.on(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, data => {
+            this.props.openSnackbar({ content: data.message, type: 'warning' });
+            this.setState({ isProcessing: false, isIdle: true });
+            setTimeout(() => {
+                this.props.closeSnackbar();
+            }, 3000);
+        });
+    }
+
     finishTransaction = fileName => {
         this.setState({ compressedURL: fileName, isProcessing: false, isUploading: false, doneProcessing: true, isIdle: true });
 
@@ -72,9 +84,7 @@ class UploadForm extends Component {
             const socket = Socket.getInstance();
 
             if (this.state.type === 0) socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_DECRYPTION_SIGNAL, { plaintext: data.plaintext.filename, key: data.key.filename, algorithm: this.props.algorithm });
-            console.log('here');
             if (this.state.type === 1) socket.emit(this.state.method === 0 ? sharedConstants.CLIENT_SENDS_FOLDER_ENCRYPTION_SIGNAL : sharedConstants.CLIENT_SENDS_FOLDER_DECRYPTION_SIGNAL, { plaintext: data.plaintext.foldername, key: data.key.filename, algorithm: this.props.algorithm });
-            console.log('after here');
         } catch (e) {
             console.log(e);
             this.setState({ isUploading: false, isIdle: true });
