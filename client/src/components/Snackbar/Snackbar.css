@@ -32,6 +32,9 @@
     border-radius: 50%;
     display: flex;
     align-items: center;
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 0.875rem;
 }
 
 .Snackbar--Success svg {
@@ -40,7 +43,7 @@
     fill: #fff;
     color: #388e3c;
     font-size: 20px;
-    margin-right: 0.5em;
+    margin-right: 0.35em;
 }
 
 .Snackbar--Warning svg {
@@ -49,5 +52,5 @@
     fill: #fff;
     color: #dd2c00;
     font-size: 20px;
-    margin-right: 0.5em;
+    margin-right: 0.35em;
 }

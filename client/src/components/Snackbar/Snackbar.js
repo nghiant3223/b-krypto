@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import './Snackbar.css';
-import check from '../../statics/images/verified.png';
 
 class Snackbar extends Component {
     render() {
         let className = this.props.currentSnackbar ? "Snackbar--Open" : "Snackbar--Close";
-        this.props.currentSnackbar && (this.props.currentSnackbar.type === 'warning' ? className += " Snackbar--Warning" : className += "Snackbar--Success");
+        this.props.currentSnackbar && (this.props.currentSnackbar.type === 'warning' ? className += " Snackbar--Warning" : className += " Snackbar--Success");
 
         return (
             <div className={`Snackbar ${className}`}>

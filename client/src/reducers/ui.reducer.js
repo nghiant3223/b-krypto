@@ -2,7 +2,7 @@ import * as actionTypes from '../constants/actionTypes';
 
 const initialState = {
     currentModal: undefined,
-    currentSnackbar: undefined
+    currentSnackbar: {type: 'success', content: 'Encrypt file successfully'}
 };
 
 export default function uiReducer(state = initialState, action) {

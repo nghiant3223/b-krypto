@@ -49,7 +49,7 @@ class UploadForm extends Component {
     finishTransaction = fileName => {
         this.setState({ compressedURL: fileName, isProcessing: false, isUploading: false, doneProcessing: true, isIdle: true });
 
-        this.props.openSnackbar({ type: 'success', content: `${this.props.type == 0 ? "File" : "Folder"} ${ this.props.method === 0 ? "encryption" : "decryption"} done` });
+        this.props.openSnackbar({ type: 'success', content: `${ this.props.method === 0 ? "Encrypt" : "Decrypt"} ${this.props.type === 0 ? "file" : "folder"} successfully` });
         
         setTimeout(() => {
             this.props.closeSnackbar();
@@ -71,8 +71,8 @@ class UploadForm extends Component {
     onUploadFormSubmit = async e => {
         e.preventDefault();
 
-        if (this.state.type === 0 && (!this.state.plaintextFile || !this.state.keyFile)) return;
-        if (this.state.type === 1 && (!this.state.filesInPlaintextFolder || !this.state.keyFile)) return;
+        if (this.state.type === 0 && (!this.state.plaintextFile || !this.state.keyFile)) return alert(`File to ${this.state.method === 0 ? 'encrypt' : 'decrypt'} or key file is empty`);
+        if (this.state.type === 1 && (!this.state.filesInPlaintextFolder || !this.state.keyFile)) return alert(`Folder to ${this.state.method === 0 ? 'encrypt' : 'decrypt'} or key file is empty`);
 
         this.setState({ isUploading: true, isIdle: false });
         try {
@@ -94,7 +94,6 @@ class UploadForm extends Component {
     onPlaintextChange = e => {
         e.persist();
         const file = e.target.files[0];
-        console.log(file);
         this.setState({
             plaintextFile: file,
             plaintextFileName: file.name
@@ -105,18 +104,10 @@ class UploadForm extends Component {
         e.persist();
         const files = e.target.files;
 
-        console.log(files[0]);
-
         this.setState({
             filesInPlaintextFolder: files,
             plaintextFolderName: /(.*)\/(.*$)/.exec(files[0].webkitRelativePath)[1]
         });
-    }
-
-    onKeyFolderChange = e => {
-        e.persist();
-
-        console.log(e.target.files);
     }
 
     onKeyChange = e => {

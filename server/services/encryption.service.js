@@ -167,7 +167,7 @@ export function aesFolderEncrypt(folder, key, socket, options) {
                         fs.unlinkSync(plaintextFilePath);
                     } catch (e) {
                         console.log(e);
-                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "There's a problem with your data" });
+                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data!" });
                         return;
                     }
                     for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
@@ -229,7 +229,7 @@ export function camelliaFolderEncrypt(folder, key, socket, options) {
                     }
                     catch (e) {
                         console.log(e);
-                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "There's a problem with your data" });
+                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data!" });
                         return;
                     }
                     for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
