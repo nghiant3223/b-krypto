@@ -3,6 +3,8 @@ import React, { PureComponent } from 'react';
 import Socket from '../../socket';
 import * as sharedConstants from '../../shares/constants';
 
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 import './ProgressBar.css';
 
 class ProgressBar extends PureComponent {
@@ -40,11 +42,11 @@ class ProgressBar extends PureComponent {
     }
 
     render() {
-        if (this.props.isUploading) return <div className="LoadingBar" />;
+        if (this.props.isUploading) return <div className="LoadingBar Bar" />;
 
-        if (this.props.isProcessing) return <div className="ProgressBar" style={{ width: `${this.state.percentage.toString()}%` }} />;
+        if (this.props.isProcessing) return <LinearProgress color="primary" variant="determinate" value={this.state.percentage} className="Bar" />;
 
-        return null;
+        return null
     }
 }
 

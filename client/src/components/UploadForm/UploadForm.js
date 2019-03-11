@@ -29,7 +29,7 @@ const refreshState = {
 
 class UploadForm extends Component {
     state = {
-        type: 1,
+        type: 0,
         method: 0,
         ...refreshState
     };
@@ -49,7 +49,7 @@ class UploadForm extends Component {
     finishTransaction = fileName => {
         this.setState({ compressedURL: fileName, isProcessing: false, isUploading: false, doneProcessing: true, isIdle: true });
 
-        this.props.openSnackbar({ type: 'success', content: `${ this.props.method === 0 ? "Encrypt" : "Decrypt"} ${this.props.type === 0 ? "file" : "folder"} successfully` });
+        this.props.openSnackbar({ type: 'success', content: `${ this.state.method === 0 ? "Encrypt" : "Decrypt"} ${this.state.type === 0 ? "file" : "folder"} successfully` });
         
         setTimeout(() => {
             this.props.closeSnackbar();
@@ -130,7 +130,7 @@ class UploadForm extends Component {
                     isIdle={this.state.isIdle}
                     finishTransaction={this.finishTransaction}/>
                 
-                <div style={{ padding: '10px', zIndex: '10', position: 'relative' }}>
+                <div style={{ padding: '10px'}}>
                     <div className="UploadForm">
                         
                         <OptionsForm

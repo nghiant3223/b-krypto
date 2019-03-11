@@ -1,14 +1,13 @@
-.ProgressBar {
-    height: 5px;
-    background-color: #4527a0;
-    z-index: 5;
-    transition: all 0.2s ease;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
+.Bar {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
 }
 
 .LoadingBar {
-    height: 5px;
+    height: 4px;
     position: relative;
     background: linear-gradient(90deg, #eee 50%, transparent 50%);
     background-color: #4527a0;

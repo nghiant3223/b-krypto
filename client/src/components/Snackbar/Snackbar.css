@@ -7,6 +7,7 @@
     font-size: 16px;
     padding: 0.75em 1.25em;
     border-radius: 2px;
+    left: 15px;
     transition: all 0.5s linear;
 }
 
@@ -20,12 +21,10 @@
 
 .Snackbar--Open {
     bottom: 10px;
-    left: 15px;
 }
 
 .Snackbar--Close {
     bottom: -100%;
-    left: 15px;
 }
 
 .Snackbar__Content {
@@ -43,7 +42,7 @@
     fill: #fff;
     color: #388e3c;
     font-size: 20px;
-    margin-right: 0.35em;
+    margin-right: 0.5em;
 }
 
 .Snackbar--Warning svg {
@@ -52,5 +51,5 @@
     fill: #fff;
     color: #dd2c00;
     font-size: 20px;
-    margin-right: 0.35em;
+    margin-right: 0.5em;
 }

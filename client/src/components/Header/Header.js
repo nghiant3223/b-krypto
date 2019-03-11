@@ -6,7 +6,7 @@ import './Header.css';
 const Header = (props) => (
     <header className="Header">
         <div className="Header__left">
-            <div className="Header__left__logo"><Link to="/">Crypto</Link></div>
+            <div className="Header__left__logo"><Link to="/">B-Krypto</Link></div>
 
             <ul className="Header__left__nav">
                 <li><NavLink to="/rsa" activeClassName="Header__NavLink--active" className="Header__NavLink">RSA</NavLink></li>

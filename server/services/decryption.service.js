@@ -24,14 +24,19 @@ export function aesDecrypt(ciphertext, key, socket, options) {
                 var iv = Buffer.alloc(16, 0);
         };
 
-        const flags = new Array(20).fill(false, 0, 20);
-        const decipher = crypto.createDecipheriv(algorithm, keyInstance, iv);
-        const ciphertextFilePath = path.join(rootDir, 'public', 'uploads', ciphertext);
-        const plaintexFilePath = path.join(rootDir, 'public', 'uploads', getFileName(ciphertext));
-        const keyFilePath = path.join(rootDir, 'public', 'uploads', key);
-        const ciphertextFileStream = fs.createReadStream(ciphertextFilePath);
-        const plaintextFileStream = fs.createWriteStream(plaintexFilePath);
-        const ciphertextFileSize = fs.statSync(path.join(rootDir, 'public', 'uploads', ciphertext))["size"];
+        try {
+            var flags = new Array(20).fill(false, 0, 20);
+            var decipher = crypto.createDecipheriv(algorithm, keyInstance, iv);
+            var ciphertextFilePath = path.join(rootDir, 'public', 'uploads', ciphertext);
+            var plaintexFilePath = path.join(rootDir, 'public', 'uploads', getFileName(ciphertext));
+            var keyFilePath = path.join(rootDir, 'public', 'uploads', key);
+            var ciphertextFileStream = fs.createReadStream(ciphertextFilePath);
+            var plaintextFileStream = fs.createWriteStream(plaintexFilePath);
+            var ciphertextFileSize = fs.statSync(path.join(rootDir, 'public', 'uploads', ciphertext))["size"];
+        } catch {
+            socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: 'Something wrong with your data' });
+            return;
+        }
 
         let decipherSize = 0;
 
@@ -43,6 +48,10 @@ export function aesDecrypt(ciphertext, key, socket, options) {
                 flags[index] = true;
                 socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
             }
+        });
+
+        decipher.on('error', function () {
+            socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: 'Something wrong with your data' });
         });
 
         plaintextFileStream.on('finish', function () {
@@ -89,15 +98,20 @@ export function camelliaDecrypt(ciphertext, key, socket, options) {
                 var iv = Buffer.alloc(16, 0);
         };
 
-        const flags = new Array(20).fill(false, 0, 20);
-        const decipher = crypto.createDecipheriv(algorithm, keyInstance, iv);
-        const ciphertextFilePath = path.join(rootDir, 'public', 'uploads', ciphertext);
-        const plaintexFilePath = path.join(rootDir, 'public', 'uploads', getFileName(ciphertext));
-        const keyFilePath = path.join(rootDir, 'public', 'uploads', key);
-        const ciphertextFileStream = fs.createReadStream(ciphertextFilePath);
-        const plaintextFileStream = fs.createWriteStream(plaintexFilePath);
-        const ciphertextFileSize = fs.statSync(path.join(rootDir, 'public', 'uploads', ciphertext))["size"];
-
+        try {
+            var flags = new Array(20).fill(false, 0, 20);
+            var decipher = crypto.createDecipheriv(algorithm, keyInstance, iv);
+            var ciphertextFilePath = path.join(rootDir, 'public', 'uploads', ciphertext);
+            var plaintexFilePath = path.join(rootDir, 'public', 'uploads', getFileName(ciphertext));
+            var keyFilePath = path.join(rootDir, 'public', 'uploads', key);
+            var ciphertextFileStream = fs.createReadStream(ciphertextFilePath);
+            var plaintextFileStream = fs.createWriteStream(plaintexFilePath);
+            var ciphertextFileSize = fs.statSync(path.join(rootDir, 'public', 'uploads', ciphertext))["size"];
+        } catch {
+            socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: 'Something wrong with your data' });
+            return;
+        }   
+            
         let decipherSize = 0;
 
         decipher.on('readable', function () {
@@ -108,6 +122,10 @@ export function camelliaDecrypt(ciphertext, key, socket, options) {
                 flags[index] = true;
                 socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
             }
+        });
+
+        decipher.on('error', function () {
+            socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: 'Something wrong with your data' });
         });
 
         plaintextFileStream.on('finish', function () {
@@ -174,7 +192,7 @@ export function aesFolderDecrypt(folder, key, socket, options) {
                         fs.unlinkSync(plaintextFilePath);
                     } catch (e) {
                         console.log(e);
-                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data!" });
+                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data" });
                         return;
                     }
                     for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
@@ -238,7 +256,7 @@ export function camelliaFolderDecrypt(folder, key, socket, options) {
                     }
                     catch (e) {
                         console.log(e);
-                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data!" });
+                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data" });
                         return;
                     }
                     for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
