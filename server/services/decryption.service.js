@@ -187,8 +187,8 @@ export function aesFolderDecrypt(folder, key, socket, options) {
                     const encryptedFilePath = path.join(rootDir, 'public', 'uploads', folder, `${getFileName(file)}.dec`);
                     
                     try {
-                        const decrypted = decipher.update(fs.readFileSync(plaintextFilePath, { encoding: 'hex' }), 'hex', 'utf8') + decipher.final('utf8');
-                        fs.writeFileSync(encryptedFilePath, decrypted, { encoding: 'utf8' });
+                        const decrypted = decipher.update(fs.readFileSync(plaintextFilePath, { encoding: 'hex' }), 'hex', 'binary') + decipher.final('binary');
+                        fs.writeFileSync(encryptedFilePath, decrypted, { encoding: 'binary' });
                         fs.unlinkSync(plaintextFilePath);
                     } catch (e) {
                         console.log(e);
@@ -250,8 +250,8 @@ export function camelliaFolderDecrypt(folder, key, socket, options) {
                     const encryptedFilePath = path.join(rootDir, 'public', 'uploads', folder, `${getFileName(file)}.dec`);
 
                     try {
-                        const decrypted = decipher.update(fs.readFileSync(plaintextFilePath, { encoding: 'hex' }), 'hex', 'utf8') + decipher.final('utf8');
-                        fs.writeFileSync(encryptedFilePath, decrypted, { encoding: 'utf8' });
+                        const decrypted = decipher.update(fs.readFileSync(plaintextFilePath, { encoding: 'hex' }), 'hex', 'binary') + decipher.final('binary');
+                        fs.writeFileSync(encryptedFilePath, decrypted, { encoding: 'binary' });
                         fs.unlinkSync(plaintextFilePath);
                     }
                     catch (e) {

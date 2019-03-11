@@ -180,7 +180,7 @@ export function aesFolderEncrypt(folder, key, socket, options) {
                     const cipher = crypto.createCipheriv(algorithm, keyInstance, iv);
                     
                     try {
-                        const encrypted = cipher.update(fs.readFileSync(plaintextFilePath, {encoding: 'utf8'}), 'utf8', 'hex') +  cipher.final('hex');
+                        const encrypted = cipher.update(fs.readFileSync(plaintextFilePath, {encoding: 'binary'}), 'binary', 'hex') +  cipher.final('hex');
                         fs.writeFileSync(encryptedFilePath, encrypted, { encoding: 'hex' });
                         fs.unlinkSync(plaintextFilePath);
                     } catch (e) {
@@ -241,7 +241,7 @@ export function camelliaFolderEncrypt(folder, key, socket, options) {
                     const cipher = crypto.createCipheriv(algorithm, keyInstance, iv);
                     
                     try {
-                        const encrypted = cipher.update(fs.readFileSync(plaintextFilePath, {encoding: 'utf8'}), 'utf8', 'hex') +  cipher.final('hex');
+                        const encrypted = cipher.update(fs.readFileSync(plaintextFilePath, {encoding: 'binary'}), 'binary', 'hex') +  cipher.final('hex');
                         fs.writeFileSync(encryptedFilePath, encrypted, { encoding: 'hex' });
                         fs.unlinkSync(plaintextFilePath);
                     }
