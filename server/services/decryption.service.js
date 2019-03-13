@@ -165,27 +165,19 @@ export function rsaDecrypt(ciphertext, key, socket, options) {
     fs.readFile(path.join(rootDir, 'public', 'uploads', key), 'utf8', function (err, password) {
         if (err) throw err;
 
-        //get plaintext from receiver's private key
-        const _plaintext = crypto.privateDecrypt( {
-            key: password,
-            padding: constants.RSA_NO_PADDING 
-        } , Buffer.from(ciphertext, "base64"))
-        const plaintext = _plaintext.toString('base64');
-        // const showThis = JSON.stringify(plaintext)
-        // console.log(showThis.data)
-        
-        //path for saving encrypted file
         const ciphertextFilePath = path.join(rootDir, 'public', 'uploads', ciphertext);
         const plaintexFilePath = path.join(rootDir, 'public', 'uploads', getFileName(ciphertext));
         const keyFilePath = path.join(rootDir, 'public', 'uploads', key);
-        
-        //start to save decrypted file
-        fs.writeFile(plaintexFilePath, plaintext,  function() {
+
+        const decryptBuffer = Buffer.from(fs.readFileSync(ciphertextFilePath, { encoding: 'base64' }), "base64");
+        const decrypted = crypto.privateDecrypt(password, decryptBuffer);
+
+        fs.writeFile(plaintexFilePath, decrypted, { encoding: 'binary' }, function () {
             const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(ciphertext)}.zip`));
             const archive = archiver('zip', { zlib: { level: 9 } });
 
             archive.pipe(compressedStream);
-            archive.append(fs.createReadStream(plaintexFilePath), { name: getFileName(ciphertext)  });
+            archive.append(fs.createReadStream(plaintexFilePath), { name: getFileName(ciphertext) });
             archive.append(fs.createReadStream(keyFilePath), { name: key });
             archive.finalize();
 
@@ -198,8 +190,7 @@ export function rsaDecrypt(ciphertext, key, socket, options) {
             catch (e) {
                 console.log('ciphertextFilePath, keyFilePath or plaintexFilePath not found');
             }
-        })
-
+        });
     });
 }
 
