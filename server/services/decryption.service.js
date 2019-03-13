@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 import rimraf from 'rimraf';
+var constants = require('constants');
 
 import * as sharedConstants from '../shares/constants';
 
@@ -156,6 +157,46 @@ export function camelliaDecrypt(ciphertext, key, socket, options) {
         });
 
         ciphertextFileStream.pipe(decipher).pipe(plaintextFileStream);
+    });
+}
+
+export function rsaDecrypt(ciphertext, key, socket, options) {
+    const rootDir = process.cwd();
+    fs.readFile(path.join(rootDir, 'public', 'uploads', key), 'utf8', function (err, password) {
+        if (err) throw err;
+
+        //get plaintext from receiver's private key
+        const plaintext = crypto.privateDecrypt( {
+            key: password,
+            padding: constants.RSA_NO_PADDING 
+        } , Buffer.from(ciphertext))
+        
+        //path for saving encrypted file
+        const ciphertextFilePath = path.join(rootDir, 'public', 'uploads', ciphertext);
+        const plaintexFilePath = path.join(rootDir, 'public', 'uploads', getFileName(ciphertext));
+        const keyFilePath = path.join(rootDir, 'public', 'uploads', key);
+        
+        //start to save decrypted file
+        fs.writeFile(plaintexFilePath, plaintext, function() {
+            const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(ciphertext)}.zip`));
+            const archive = archiver('zip', { zlib: { level: 9 } });
+
+            archive.pipe(compressedStream);
+            archive.append(fs.createReadStream(plaintexFilePath), { name: getFileName(ciphertext)  });
+            archive.append(fs.createReadStream(keyFilePath), { name: key });
+            archive.finalize();
+
+            socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(ciphertext)}.zip` });
+            try {
+                fs.unlinkSync(ciphertextFilePath);
+                fs.unlinkSync(keyFilePath);
+                fs.unlinkSync(plaintexFilePath);
+            }
+            catch (e) {
+                console.log('ciphertextFilePath, keyFilePath or plaintexFilePath not found');
+            }
+        })
+
     });
 }
 

@@ -1,7 +1,7 @@
 import socketIO from 'socket.io';
 
-import { aesEncrypt, camelliaEncrypt, aesFolderEncrypt, camelliaFolderEncrypt } from './services/encryption.service';
-import { aesDecrypt, camelliaDecrypt, aesFolderDecrypt, camelliaFolderDecrypt } from './services/decryption.service';
+import { aesEncrypt, rsaEncrypt, camelliaEncrypt, aesFolderEncrypt, camelliaFolderEncrypt } from './services/encryption.service';
+import { aesDecrypt, rsaDecrypt, camelliaDecrypt, aesFolderDecrypt, camelliaFolderDecrypt } from './services/decryption.service';
 
 import * as sharedConstants from './shares/constants';
 
@@ -14,7 +14,8 @@ export default function (server) {
         socket.on(sharedConstants.CLIENT_SENDS_ENCRYPTION_SIGNAL, ({ plaintext, key, algorithm, options }) => {
             switch (algorithm) {
                 case 'rsa':
-                    throw Error("Algorithm not supported!");
+                    // throw Error("Algorithm not supported!");
+                    rsaEncrypt(plaintext, key, socket, options);
                     break;
                 
                 case 'camellia':
@@ -33,7 +34,8 @@ export default function (server) {
         socket.on(sharedConstants.CLIENT_SENDS_DECRYPTION_SIGNAL, ({ plaintext, key, algorithm, options }) => {
             switch (algorithm) {
                 case 'rsa':
-                    throw Error("Algorithm not supported!");
+                    // throw Error("Algorithm not supported!");
+                    rsaDecrypt(plaintext, key, socket, options);
                     break;
 
                 case 'camellia':

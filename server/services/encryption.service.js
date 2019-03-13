@@ -154,6 +154,47 @@ export function camelliaEncrypt(plaintext, key, socket, options) {
     });
 }
 
+export function rsaEncrypt(plaintext, key, socket, options) {
+    const rootDir = process.cwd();
+    // if possible to read file
+    fs.readFile(path.join(rootDir, 'public', 'uploads', key), 'utf8', function (err, password) {
+        if (err) throw err;
+
+        //create cipher text from receiver's public key
+        const cipher = crypto.publicEncrypt(password, Buffer.from(plaintext))
+        
+        //path for saving encrypted file
+        const plaintextFilePath = path.join(rootDir, 'public', 'uploads', plaintext);
+        const encryptedFilePath = path.join(rootDir, 'public', 'uploads', `${plaintext}.enc`);
+        const keyFilePath = path.join(rootDir, 'public', 'uploads', key);
+
+        //start to save encrypted file
+        socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
+
+      	fs.writeFile(encryptedFilePath, cipher, function() {
+          const compressedItem = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(plaintext)}.zip`));
+          const archive = archiver('zip', { zlib: { level: 9 } });
+
+          archive.pipe(compressedItem);
+          archive.append(fs.createReadStream(encryptedFilePath), { name: `${plaintext}.enc` });
+          archive.append(fs.createReadStream(keyFilePath), { name: key });
+          archive.finalize();
+
+          socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(plaintext)}.zip` });
+
+          try {
+              fs.unlinkSync(plaintextFilePath);
+              fs.unlinkSync(keyFilePath);
+              fs.unlinkSync(encryptedFilePath);
+          } catch (e) {
+              console.log('plaintextFilePath, keyFilePath or encryptedFilePath not found');
+          }
+        });
+      
+
+    });
+}
+
 export function aesFolderEncrypt(folder, key, socket, options) {
     const rootDir = process.cwd();
     const keyFilePath = path.join(rootDir, 'public', 'uploads', folder, key);
