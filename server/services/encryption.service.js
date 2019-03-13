@@ -161,7 +161,8 @@ export function rsaEncrypt(plaintext, key, socket, options) {
         if (err) throw err;
 
         //create cipher text from receiver's public key
-        const cipher = crypto.publicEncrypt(password, Buffer.from(plaintext))
+        const _cipher = crypto.publicEncrypt(password, Buffer.from(plaintext));
+        const cipher = _cipher.toString('base64');
         
         //path for saving encrypted file
         const plaintextFilePath = path.join(rootDir, 'public', 'uploads', plaintext);

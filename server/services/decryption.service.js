@@ -166,10 +166,13 @@ export function rsaDecrypt(ciphertext, key, socket, options) {
         if (err) throw err;
 
         //get plaintext from receiver's private key
-        const plaintext = crypto.privateDecrypt( {
+        const _plaintext = crypto.privateDecrypt( {
             key: password,
             padding: constants.RSA_NO_PADDING 
-        } , Buffer.from(ciphertext))
+        } , Buffer.from(ciphertext, "base64"))
+        const plaintext = _plaintext.toString('base64');
+        // const showThis = JSON.stringify(plaintext)
+        // console.log(showThis.data)
         
         //path for saving encrypted file
         const ciphertextFilePath = path.join(rootDir, 'public', 'uploads', ciphertext);
@@ -177,7 +180,7 @@ export function rsaDecrypt(ciphertext, key, socket, options) {
         const keyFilePath = path.join(rootDir, 'public', 'uploads', key);
         
         //start to save decrypted file
-        fs.writeFile(plaintexFilePath, plaintext, function() {
+        fs.writeFile(plaintexFilePath, plaintext,  function() {
             const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(ciphertext)}.zip`));
             const archive = archiver('zip', { zlib: { level: 9 } });
 
