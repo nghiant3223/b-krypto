@@ -169,8 +169,14 @@ export function rsaDecrypt(ciphertext, key, socket, options) {
         const plaintexFilePath = path.join(rootDir, 'public', 'uploads', getFileName(ciphertext));
         const keyFilePath = path.join(rootDir, 'public', 'uploads', key);
 
-        const decryptBuffer = Buffer.from(fs.readFileSync(ciphertextFilePath, { encoding: 'base64' }), "base64");
-        const decrypted = crypto.privateDecrypt(password, decryptBuffer);
+        try {
+            const decryptBuffer = Buffer.from(fs.readFileSync(ciphertextFilePath, { encoding: 'base64' }), "base64");
+            var decrypted = crypto.privateDecrypt(password, decryptBuffer);
+        } catch (e) {
+            console.log(e);
+            socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data. Maybe data is too large" });
+            return;
+        }
 
         fs.writeFile(plaintexFilePath, decrypted, { encoding: 'binary' }, function () {
             const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(ciphertext)}.zip`));
@@ -292,6 +298,69 @@ export function camelliaFolderDecrypt(folder, key, socket, options) {
                     catch (e) {
                         console.log(e);
                         socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data" });
+                        return;
+                    }
+                    for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
+                        socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
+                    }
+                    percentage += 95 / (files.length - 1);
+                }
+            }
+
+            socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
+
+            const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(folder)}.zip`));
+            const archive = archiver('zip', { zlib: { level: 9 } });
+
+            archive.pipe(compressedStream);
+            archive.directory(folderPath, false);
+            archive.finalize();
+
+            compressedStream.on('close', async function () {
+                socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(folder)}.zip` });
+
+                rimraf(folderPath, function (err) {
+                    if (err) console.log(err);
+                });
+            });
+        });
+    });
+}
+
+export function rsaFolderDecrypt(folder, key, socket, options) {
+    const rootDir = process.cwd();
+    const keyFilePath = path.join(rootDir, 'public', 'uploads', folder, key);
+    const folderPath = path.join(rootDir, 'public', 'uploads', folder);
+
+    fs.readFile(keyFilePath, 'utf8', function (err, password) {
+        if (err) return socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: 'Key not found' });
+
+        switch (options) {
+            default: // Default case is for aes-192-cbc
+                var algorithm = 'camellia-192-cbc';
+                var keyInstance = crypto.scryptSync(password, 'salt', 24);
+                var iv = Buffer.alloc(16, 0);
+        };
+    
+        fs.readdir(folderPath, function (err, files) {
+            if (err) throw err;
+
+            let percentage = 0;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+
+                if (file !== key) {
+                    const plaintextFilePath = path.join(rootDir, 'public', 'uploads', folder, file);
+                    const encryptedFilePath = path.join(rootDir, 'public', 'uploads', folder, `${getFileName(file)}.dec`);
+
+                    try {
+                        const decryptBuffer = Buffer.from(fs.readFileSync(plaintextFilePath, { encoding: 'base64' }), "base64");
+                        const decrypted = crypto.privateDecrypt(password, decryptBuffer);
+                        fs.writeFileSync(encryptedFilePath, decrypted, { encoding: 'binary' });
+                        fs.unlinkSync(plaintextFilePath);}
+                    catch (e) {
+                        console.log(e);
+                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data. Maybe data is too large" });
                         return;
                     }
                     for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {

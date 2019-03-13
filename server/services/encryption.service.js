@@ -163,8 +163,14 @@ export function rsaEncrypt(plaintext, key, socket, options) {
         const encryptedFilePath = path.join(rootDir, 'public', 'uploads', `${plaintext}.enc`);
         const keyFilePath = path.join(rootDir, 'public', 'uploads', key);
 
-        const encryptBuffer = Buffer.from(fs.readFileSync(plaintextFilePath));
-        const encrypted = crypto.publicEncrypt(password, encryptBuffer);
+        try {
+            const encryptBuffer = Buffer.from(fs.readFileSync(plaintextFilePath));
+            var encrypted = crypto.publicEncrypt(password, encryptBuffer);
+        } catch (e) {
+            console.log(e);
+            socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data. Maybe data is too large" });
+            return;
+        }
 
         socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
 
@@ -221,7 +227,7 @@ export function aesFolderEncrypt(folder, key, socket, options) {
                         fs.unlinkSync(plaintextFilePath);
                     } catch (e) {
                         console.log(e);
-                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data" });
+                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data. Maybe data is too large" });
                         return;
                     }
                     for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
@@ -251,20 +257,13 @@ export function aesFolderEncrypt(folder, key, socket, options) {
     });
 }
 
-export function camelliaFolderEncrypt(folder, key, socket, options) {
+export function rsaFolderEncrypt(folder, key, socket, options) {
     const rootDir = process.cwd();
     const keyFilePath = path.join(rootDir, 'public', 'uploads', folder, key);
     const folderPath = path.join(rootDir, 'public', 'uploads', folder);
 
     fs.readFile(keyFilePath, 'utf8', function (err, password) {
         if (err) throw err;
-
-        switch (options) {
-            default: // Default case is for aes-192-cbc
-                var algorithm = 'camellia-192-cbc';
-                var keyInstance = crypto.scryptSync(password, 'salt', 24);
-                var iv = Buffer.alloc(16, 0); // Initialization vector.
-        };
     
         fs.readdir(folderPath, function (err, files) {
             if (err) throw err;
@@ -274,16 +273,16 @@ export function camelliaFolderEncrypt(folder, key, socket, options) {
                 if (file !== key) {
                     const plaintextFilePath = path.join(rootDir, 'public', 'uploads', folder, file);
                     const encryptedFilePath = path.join(rootDir, 'public', 'uploads', folder, `${file}.enc`);
-                    const cipher = crypto.createCipheriv(algorithm, keyInstance, iv);
                     
                     try {
-                        const encrypted = cipher.update(fs.readFileSync(plaintextFilePath, {encoding: 'binary'}), 'binary', 'hex') +  cipher.final('hex');
-                        fs.writeFileSync(encryptedFilePath, encrypted, { encoding: 'hex' });
+                        const encryptBuffer = Buffer.from(fs.readFileSync(plaintextFilePath));
+                        const encrypted = crypto.publicEncrypt(password, encryptBuffer);
+                        fs.writeFileSync(encryptedFilePath, encrypted, { encoding: 'base64' });
                         fs.unlinkSync(plaintextFilePath);
                     }
                     catch (e) {
                         console.log(e);
-                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data" });
+                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data. Maybe data is too large" });
                         return;
                     }
                     for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {

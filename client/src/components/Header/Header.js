@@ -12,6 +12,7 @@ const Header = (props) => (
                 <li><NavLink to="/rsa" activeClassName="Header__NavLink--active" className="Header__NavLink">RSA</NavLink></li>
                 <li><NavLink to="/aes" activeClassName="Header__NavLink--active" className="Header__NavLink">AES</NavLink></li>
                 <li><NavLink to="/camellia" activeClassName="Header__NavLink--active" className="Header__NavLink">Camellia</NavLink></li>
+                <li><NavLink to="/keygen" activeClassName="Header__NavLink--active" className="Header__NavLink">Public-key Generator</NavLink></li>
                 <li><NavLink to="/why" activeClassName="Header__NavLink--active" className="Header__NavLink">Why?</NavLink></li>
             </ul>
         </div>

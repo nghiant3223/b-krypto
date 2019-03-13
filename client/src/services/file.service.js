@@ -1,5 +1,4 @@
 import Axios from 'axios';
-import { array } from 'prop-types';
 
 export function uploadFiles(plaintext, key) {
     const formData = new FormData();
