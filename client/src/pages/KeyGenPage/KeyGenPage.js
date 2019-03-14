@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
@@ -10,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import { TextField } from '@material-ui/core';
 
 import { getKey } from '../../services/key.service';
+import * as uiActions from '../../actions/ui.action';
 
 import './KeyGenPage.css';
 
@@ -26,6 +28,24 @@ const styles = theme => ({
         marginTop: theme.spacing.unit * 2,
     },
 });
+
+
+const keys = {
+    publicKey: `-----BEGIN PUBLIC KEY-----
+MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALy/p2bS+9j5V/oyEZsBQuTfRCIu2Usb
+QYqYyF6TQy+CdenyPfyqLNVImgUnGLyYDqBhlss5KN1QPy09WCntE6cCAwEAAQ==
+-----END PUBLIC KEY-----`,
+    privateKey: `-----BEGIN PRIVATE KEY-----
+MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAvL+nZtL72PlX+jIR
+mwFC5N9EIi7ZSxtBipjIXpNDL4J16fI9/Kos1UiaBScYvJgOoGGWyzko3VA/LT1Y
+Ke0TpwIDAQABAkEAqMo/Op2sqLD6cvy5b8Nl/eSHOoZovVinePj+Hk1VBLL97cfc
+yh+91SZ3/J9i+9TLYRLhiGaIyEBNElHtBGNFKQIhAN6yumYnDkNMqHgqEcGDgtHX
+afEpODrR2fYAd22FxLLjAiEA2PlHmcOZ+1NKOqB0EHER0Pof5W1pYyZIHSRWnu2O
+w20CIQDMqGvs3Q+agaSBaggPUxCyT8kou7zVMW2hSiR3Hmv6CQIgUFgel2XDAznY
+ZtU7pUr5WfUFEqPtPnXShlgKa1d0YhECIDFHF5Bd8pUg4+57HfjzROzPpv4PLsVV
+AZ1sPZxnL5+7
+-----END PRIVATE KEY-----`
+};
 
 class KeyGenPage extends Component {
     state = {
@@ -49,6 +69,34 @@ class KeyGenPage extends Component {
     onSizeChange = (e) => {
         console.log(e.target);
         this.setState({ value: e.target.value });
+    }
+
+    onPublicKeyTextFieldClick = () => {
+        let dummy = document.createElement("input");
+        document.body.appendChild(dummy);
+        dummy.setAttribute('value', this.state.publicKey);
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+        this.displaySnackbar();
+    }
+
+    onPrivateKeyTextFieldClick = () => {
+        let dummy = document.createElement("input");
+        document.body.appendChild(dummy);
+        dummy.setAttribute('value', this.state.privateKey);
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+        this.displaySnackbar();
+    }
+
+    displaySnackbar = () => {
+        this.props.openSnackbar({ type: 'success', content: `Copied to clipboard` });
+        
+        setTimeout(() => {
+            this.props.closeSnackbar();
+        }, 3000);
     }
 
     render() {
@@ -94,8 +142,8 @@ class KeyGenPage extends Component {
                                     label="Public key"
                                     multiline
                                     rows="4"
-                                    defaultValue=" "
                                     value={this.state.publicKey}
+                                    onClick={this.onPublicKeyTextFieldClick}
                                     margin="normal" InputProps={{readOnly: true }}>
                                     
                                 </TextField>
@@ -106,7 +154,7 @@ class KeyGenPage extends Component {
                                     label="Private key"
                                     multiline
                                     rows="4"
-                                    defaultValue=" "
+                                    onClick={this.onPrivateKeyTextFieldClick}
                                     value={this.state.privateKey}
                                     margin="normal" InputProps={{ readOnly: true }}>
                                 </TextField>
@@ -119,21 +167,9 @@ class KeyGenPage extends Component {
     }
 }
 
-export default withStyles(styles)(KeyGenPage)
+const mapDispatchToProps = dispatch => ({
+    openSnackbar: snackbarInfo => dispatch(uiActions.openSnackbar(snackbarInfo)),
+    closeSnackbar: _ => dispatch(uiActions.closeSnackbar())
+});
 
-const keys = {
-    publicKey: `-----BEGIN PUBLIC KEY-----
-MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALy/p2bS+9j5V/oyEZsBQuTfRCIu2Usb
-QYqYyF6TQy+CdenyPfyqLNVImgUnGLyYDqBhlss5KN1QPy09WCntE6cCAwEAAQ==
------END PUBLIC KEY-----`,
-    privateKey: `-----BEGIN PRIVATE KEY-----
-MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAvL+nZtL72PlX+jIR
-mwFC5N9EIi7ZSxtBipjIXpNDL4J16fI9/Kos1UiaBScYvJgOoGGWyzko3VA/LT1Y
-Ke0TpwIDAQABAkEAqMo/Op2sqLD6cvy5b8Nl/eSHOoZovVinePj+Hk1VBLL97cfc
-yh+91SZ3/J9i+9TLYRLhiGaIyEBNElHtBGNFKQIhAN6yumYnDkNMqHgqEcGDgtHX
-afEpODrR2fYAd22FxLLjAiEA2PlHmcOZ+1NKOqB0EHER0Pof5W1pYyZIHSRWnu2O
-w20CIQDMqGvs3Q+agaSBaggPUxCyT8kou7zVMW2hSiR3Hmv6CQIgUFgel2XDAznY
-ZtU7pUr5WfUFEqPtPnXShlgKa1d0YhECIDFHF5Bd8pUg4+57HfjzROzPpv4PLsVV
-AZ1sPZxnL5+7
------END PRIVATE KEY-----`
-};
+export default withStyles(styles)(connect(null, mapDispatchToProps)(KeyGenPage));

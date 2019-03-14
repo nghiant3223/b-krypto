@@ -58,6 +58,7 @@
 
 .KeyGenPage__Container__Right textarea {
     flex-grow: 1;
+    cursor: url('../../statics/images/copy.png'), auto;
 }
 
 .KeyGenPage__Container__Left {
