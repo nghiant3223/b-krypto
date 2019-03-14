@@ -46,6 +46,7 @@
     flex-direction: column;
     margin-left: 1.5rem;
     margin-right: 1.5rem;
+    flex-grow: 1;
 }
 
 .KeyGenPage__Container__Right:last-child {
@@ -57,7 +58,6 @@
 }
 
 .KeyGenPage__Container__Right textarea {
-    flex-grow: 1;
     cursor: url('../../statics/images/copy.png'), auto;
 }
 
