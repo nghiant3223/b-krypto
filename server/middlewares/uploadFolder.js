@@ -15,9 +15,13 @@ export const uploadFolder = multer({
 }).fields([{ name: 'plaintext', maxCount: 50 }, { name: 'key', maxCount: 1 }]);
 
 export function makeDirectory(req, res, next) {
+<<<<<<< HEAD
     const address = req.headers['x-forwarded-for'] || req.connection.remoteAddress
     const port = req.headers['x-forwarded-port'] || req.connection.remotePort;
     const hashedFolderName = crypto.createHash('sha1').update(`${req.params.folderName}-${(new Date().getTime().toString())}-${address}-${port}`).digest('hex');
+=======
+    const hashedFolderName = crypto.createHash('sha1').update(`${req.params.folderName}-${(new Date().getTime().toString())}`).digest('hex');
+>>>>>>> 587ee88814bedf6d8fff054765a8d47ba0630799
     const rootDir = process.cwd();
 
     req.hashedFolderName = hashedFolderName;

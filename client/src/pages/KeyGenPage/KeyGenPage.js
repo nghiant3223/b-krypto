@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
+=======
+import { connect } from 'react-redux';
+>>>>>>> 587ee88814bedf6d8fff054765a8d47ba0630799
 
 import { withStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
@@ -28,11 +32,36 @@ const styles = theme => ({
     },
 });
 
+<<<<<<< HEAD
 class KeyGenPage extends Component {
     state = {
         value: 512,
         publicKey: ' ',
         privateKey: ' ',
+=======
+
+const keys = {
+    publicKey: `-----BEGIN PUBLIC KEY-----
+MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALy/p2bS+9j5V/oyEZsBQuTfRCIu2Usb
+QYqYyF6TQy+CdenyPfyqLNVImgUnGLyYDqBhlss5KN1QPy09WCntE6cCAwEAAQ==
+-----END PUBLIC KEY-----`,
+    privateKey: `-----BEGIN PRIVATE KEY-----
+MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAvL+nZtL72PlX+jIR
+mwFC5N9EIi7ZSxtBipjIXpNDL4J16fI9/Kos1UiaBScYvJgOoGGWyzko3VA/LT1Y
+Ke0TpwIDAQABAkEAqMo/Op2sqLD6cvy5b8Nl/eSHOoZovVinePj+Hk1VBLL97cfc
+yh+91SZ3/J9i+9TLYRLhiGaIyEBNElHtBGNFKQIhAN6yumYnDkNMqHgqEcGDgtHX
+afEpODrR2fYAd22FxLLjAiEA2PlHmcOZ+1NKOqB0EHER0Pof5W1pYyZIHSRWnu2O
+w20CIQDMqGvs3Q+agaSBaggPUxCyT8kou7zVMW2hSiR3Hmv6CQIgUFgel2XDAznY
+ZtU7pUr5WfUFEqPtPnXShlgKa1d0YhECIDFHF5Bd8pUg4+57HfjzROzPpv4PLsVV
+AZ1sPZxnL5+7
+-----END PRIVATE KEY-----`
+};
+
+class KeyGenPage extends Component {
+    state = {
+        value: 512,
+        ...keys
+>>>>>>> 587ee88814bedf6d8fff054765a8d47ba0630799
     }
 
     componentDidMount = () => {
@@ -42,7 +71,11 @@ class KeyGenPage extends Component {
     onFormSubmit = async () => {
         try {
             const { data: { publicKey, privateKey } } = await getKey(this.state.value);
+<<<<<<< HEAD
             this.setState({ publicKey, privateKey });
+=======
+            this.setState({ publicKey: publicKey.substring(0, publicKey.length-1), privateKey : privateKey.substring(0, privateKey.length-1) });
+>>>>>>> 587ee88814bedf6d8fff054765a8d47ba0630799
         } catch (e) {
             console.log(e);
         }
@@ -53,6 +86,29 @@ class KeyGenPage extends Component {
         this.setState({ value: e.target.value });
     }
 
+<<<<<<< HEAD
+=======
+    onPublicKeyTextFieldClick = () => {
+        let dummy = document.createElement("input");
+        document.body.appendChild(dummy);
+        dummy.setAttribute('value', this.state.publicKey);
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+        this.displaySnackbar();
+    }
+
+    onPrivateKeyTextFieldClick = () => {
+        let dummy = document.createElement("input");
+        document.body.appendChild(dummy);
+        dummy.setAttribute('value', this.state.privateKey);
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+        this.displaySnackbar();
+    }
+
+>>>>>>> 587ee88814bedf6d8fff054765a8d47ba0630799
     displaySnackbar = () => {
         this.props.openSnackbar({ type: 'success', content: `Copied to clipboard` });
         
@@ -105,6 +161,10 @@ class KeyGenPage extends Component {
                                     multiline
                                     rows="4"
                                     value={this.state.publicKey}
+<<<<<<< HEAD
+=======
+                                    onClick={this.onPublicKeyTextFieldClick}
+>>>>>>> 587ee88814bedf6d8fff054765a8d47ba0630799
                                     margin="normal" InputProps={{readOnly: true }}>
                                     
                                 </TextField>
@@ -115,7 +175,11 @@ class KeyGenPage extends Component {
                                     label="Private key"
                                     multiline
                                     rows="4"
+<<<<<<< HEAD
 
+=======
+                                    onClick={this.onPrivateKeyTextFieldClick}
+>>>>>>> 587ee88814bedf6d8fff054765a8d47ba0630799
                                     value={this.state.privateKey}
                                     margin="normal" InputProps={{ readOnly: true }}>
                                 </TextField>
@@ -128,4 +192,13 @@ class KeyGenPage extends Component {
     }
 }
 
+<<<<<<< HEAD
 export default withStyles(styles)(KeyGenPage);
+=======
+const mapDispatchToProps = dispatch => ({
+    openSnackbar: snackbarInfo => dispatch(uiActions.openSnackbar(snackbarInfo)),
+    closeSnackbar: _ => dispatch(uiActions.closeSnackbar())
+});
+
+export default withStyles(styles)(connect(null, mapDispatchToProps)(KeyGenPage));
+>>>>>>> 587ee88814bedf6d8fff054765a8d47ba0630799

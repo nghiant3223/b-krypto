@@ -57,6 +57,13 @@
     margin-left: 0;
 }
 
+<<<<<<< HEAD
+=======
+.KeyGenPage__Container__Right textarea {
+    cursor: url('../../statics/images/copy.png'), auto;
+}
+
+>>>>>>> 587ee88814bedf6d8fff054765a8d47ba0630799
 .KeyGenPage__Container__Left {
     flex-basis: 150px;
     flex-grow: 0 !important;
