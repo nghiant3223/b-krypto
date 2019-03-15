@@ -1,0 +1,93 @@
+.KeyGenPage__Pseudo button {
+    border: 0;
+    padding: 0.25em 1em;
+    cursor: pointer;
+    background: #ffc400;
+    text-transform: uppercase;
+    color: rgb(49, 46, 46);
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    outline: none;
+    position: relative;
+    transition: opacity 0.25s ease;
+    opacity: 1;
+}
+
+.KeyGenPage__Pseudo button:hover {
+    opacity: 0.9;
+    background: #ffc400;
+}
+
+.KeyGenPage__Pseudo {
+    flex: 1 1 0;
+    border-radius: 5px;
+    background: #fff1c6;
+    position: relative;
+}
+
+.KeyGenPage {
+    padding: 10px;
+    color: #312d2d;
+    background: #ffecb3;
+    border: dashed 2px gray;
+    border-radius: 5px;
+}
+
+.KeyGenPage__Container {
+    display: flex;
+    min-height: 350px;
+    justify-content: space-between;
+}
+
+.KeyGenPage__Container__Right {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+    flex-grow: 1;
+}
+
+.KeyGenPage__Container__Right:last-child {
+    margin-right: 0;
+}
+
+.KeyGenPage__Container__Right:first-child{
+    margin-left: 0;
+}
+
+.KeyGenPage__Container__Left {
+    flex-basis: 150px;
+    flex-grow: 0 !important;
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.KeyGenPage__Container p {
+    font-weight: bold;
+    font-size: 1.15em;
+    margin-left: 1.15em;
+    margin-bottom: 0.5em;
+}
+
+.KeyGenPage__Container textarea {
+    width: 100%;
+    height: 300px;
+    background: #ffecb3;
+    outline: none;
+    padding: 0.5em;
+    font-size: 0.85rem;
+    font-family: 'Inconsolata';
+}
+
+.KeyGenPage__Container label {
+    font-size: 1.25rem;
+}
+
+.KeyGenPage__Container__Left__Button {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}

@@ -1,0 +1,51 @@
+.UploadForm--Pseudo {
+    flex: 1 1 0;
+    border-radius: 5px;
+    background: #fff1c6;
+    position: relative;
+}
+
+.UploadForm {
+    display: flex;
+    min-height: 250px;
+    color: #312d2d;
+    background: #ffecb3;
+}
+
+.UploadForm__Plaintext,
+.UploadForm__Key {
+    position: relative;
+    flex: 1 1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.UploadForm label {
+    font-size: 1em;
+}
+
+.UploadForm input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    cursor: pointer;
+}
+
+.UploadForm__IconContainer {
+    margin-bottom: 1em;
+}
+
+.UploadForm__IconContainer img {
+    margin: 0 auto;
+    display: block;
+}
+
+.UploadForm__FileName {
+    text-align: center;
+}

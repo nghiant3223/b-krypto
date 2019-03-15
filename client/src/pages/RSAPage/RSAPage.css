@@ -1,0 +1,17 @@
+.AlgorithmPage p {
+    margin: 1rem auto;
+}
+
+.AlgorithmPage__Title {
+    font-size: 2rem;
+    text-align: center;
+}
+
+.AlgorithmPage__Subtitle {
+    text-align: center;
+}
+
+.AlgorithmPage__Main {
+    margin-top: 3em;
+    display: flex;
+}

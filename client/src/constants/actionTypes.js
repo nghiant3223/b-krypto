@@ -1,0 +1,9 @@
+export const LOGIN_USER_SUCCESSFUL = "LOGIN_USER";
+export const LOGIN_USER_FAILED = "LOGIN_USER_FAILED";
+export const LOGOUT_USER = "LOGOUT_USER";
+
+export const CLOSE_MODAL = "CLOSE_MODAL";
+export const OPEN_MODAL = "OPEN_MODAL";
+
+export const OPEN_SNACKBAR = "OPEN_SNACKBAR";
+export const CLOSE_SNACKBAR = "CLOSE_SNACKBAR";
