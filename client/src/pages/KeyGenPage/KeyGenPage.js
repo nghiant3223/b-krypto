@@ -115,7 +115,6 @@ class KeyGenPage extends Component {
                                     label="Private key"
                                     multiline
                                     rows="4"
-
                                     value={this.state.privateKey}
                                     margin="normal" InputProps={{ readOnly: true }}>
                                 </TextField>
