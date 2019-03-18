@@ -264,50 +264,47 @@ export function rsaFolderEncrypt(folder, key, socket, options) {
     const folderPath = path.join(rootDir, 'public', 'uploads', folder);
 
     fs.readFile(keyFilePath, 'utf8', function (err, password) {
+        const files = getFiles(folderPath);
         if (err) throw err;
 
-        fs.readdir(folderPath, function (err, files) {
-            if (err) throw err;
-
-            let percentage = 0;
-            for (let file of files) {
-                if (file !== key) {
-                    const plaintextFilePath = path.join(rootDir, 'public', 'uploads', folder, file);
-                    const encryptedFilePath = path.join(rootDir, 'public', 'uploads', folder, `${file}.enc`);
-
-                    try {
-                        const encryptBuffer = Buffer.from(fs.readFileSync(plaintextFilePath));
-                        const encrypted = crypto.publicEncrypt(password, encryptBuffer);
-                        fs.writeFileSync(encryptedFilePath, encrypted, { encoding: 'base64' });
-                        fs.unlinkSync(plaintextFilePath);
-                    }
-                    catch (e) {
-                        console.log(e);
-                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data. Maybe data is too large" });
-                        return;
-                    }
-                    for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
-                        socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
-                    }
-                    percentage += 95 / (files.length - 1);
+        let percentage = 0;
+        for (let file of files) {
+            if (file !== key) {
+                const plaintextFilePath = file;
+                const plaintextFileName = file.split('/').slice(-1)[0];
+                const encryptedFilePath = `${file.split('/').slice(0, -1).join('/')}/${plaintextFileName}.enc`;
+                try {
+                    const encryptBuffer = Buffer.from(fs.readFileSync(plaintextFilePath));
+                    const encrypted = crypto.publicEncrypt(password, encryptBuffer);
+                    fs.writeFileSync(encryptedFilePath, encrypted, { encoding: 'base64' });
+                    fs.unlinkSync(plaintextFilePath);
                 }
+                catch (e) {
+                    console.log(e);
+                    socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data. Maybe data is too large" });
+                    return;
+                }
+                for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
+                    socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
+                }
+                percentage += 95 / (files.length - 1);
             }
+        }
 
-            socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
+        socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
 
-            const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(folder)}.zip`));
-            const archive = archiver('zip', { zlib: { level: 9 } });
+        const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(folder)}.zip`));
+        const archive = archiver('zip', { zlib: { level: 9 } });
 
-            archive.pipe(compressedStream);
-            archive.directory(folderPath, false);
-            archive.finalize();
+        archive.pipe(compressedStream);
+        archive.directory(folderPath, false);
+        archive.finalize();
 
-            compressedStream.on('close', async function () {
-                socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(folder)}.zip` });
+        compressedStream.on('close', async function () {
+            socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(folder)}.zip` });
 
-                rimraf(folderPath, function (err) {
-                    if (err) console.log(err);
-                });
+            rimraf(folderPath, function (err) {
+                if (err) console.log(err);
             });
         });
     });
