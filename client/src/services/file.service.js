@@ -13,8 +13,12 @@ export function uploadFolders(files, key) {
     const formData = new FormData();
     const folder = files[0].webkitRelativePath.split('/')[0];
 
-    Object.keys(files).forEach(key => formData.append('plaintext', files[key]));
+    console.log(files);
+
+    Object.keys(files).forEach(key => formData.append(files[key].webkitRelativePath, files[key]));
     formData.append('key', key);
+
+    console.log(formData);
 
     return Axios.post(`/api/upload/folder/${folder}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });  
 }

@@ -103,11 +103,14 @@ class UploadForm extends Component {
     onPlaintextFolderChange = e => {
         e.persist();
         const files = e.target.files;
+        const folderName = files[0].webkitRelativePath.split('/')[0];
 
         this.setState({
             filesInPlaintextFolder: files,
-            plaintextFolderName: /(.*)\/(.*$)/.exec(files[0].webkitRelativePath)[1]
+            plaintextFolderName: folderName
         });
+
+        console.log(e);
     }
 
     onKeyChange = e => {
