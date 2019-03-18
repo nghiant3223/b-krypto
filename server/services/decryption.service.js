@@ -200,69 +200,6 @@ export function rsaDecrypt(ciphertext, key, socket, options) {
     });
 }
 
-// export function aesFolderDecrypt(folder, key, socket, options) {
-//     const rootDir = process.cwd();
-//     const keyFilePath = path.join(rootDir, 'public', 'uploads', folder, key);
-//     const folderPath = path.join(rootDir, 'public', 'uploads', folder);
-
-//     fs.readFile(keyFilePath, 'utf8', function (err, password) {
-//         if (err) return socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: 'Key not found' });
-
-//         switch (options) {
-//             default: // Default case is for aes-192-cbc
-//                 var algorithm = 'aes-192-cbc';
-//                 var keyInstance = crypto.scryptSync(password, 'salt', 24);
-//                 var iv = Buffer.alloc(16, 0);
-//         };
-
-//         fs.readdir(folderPath, function (err, files) {
-//             if (err) throw err;
-
-//             let percentage = 0;
-//             for (let i = 0; i < files.length; i++) {
-//                 const file = files[i];
-
-//                 if (file !== key) {
-//                     const decipher = crypto.createDecipheriv(algorithm, keyInstance, iv);
-//                     const plaintextFilePath = path.join(rootDir, 'public', 'uploads', folder, file);
-//                     const encryptedFilePath = path.join(rootDir, 'public', 'uploads', folder, `${getFileName(file)}.dec`);
-
-//                     try {
-//                         const decrypted = decipher.update(fs.readFileSync(plaintextFilePath, { encoding: 'hex' }), 'hex', 'binary') + decipher.final('binary');
-//                         fs.writeFileSync(encryptedFilePath, decrypted, { encoding: 'binary' });
-//                         fs.unlinkSync(plaintextFilePath);
-//                     } catch (e) {
-//                         console.log(e);
-//                         socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data" });
-//                         return;
-//                     }
-//                     for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
-//                         socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
-//                     }
-//                     percentage += 95 / (files.length - 1);
-//                 }
-//             }
-
-//             socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
-
-//             const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(folder)}.zip`));
-//             const archive = archiver('zip', { zlib: { level: 9 } });
-
-//             archive.pipe(compressedStream);
-//             archive.directory(folderPath, false);
-//             archive.finalize();
-
-//             compressedStream.on('close', async function () {
-//                 socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(folder)}.zip` });
-
-//                 rimraf(folderPath, function (err) {
-//                     if (err) console.log(err);
-//                 });
-//             });
-//         });
-//     });
-// }
-
 export function camelliaFolderDecrypt(folder, key, socket, options) {
     const rootDir = process.cwd();
     const keyFilePath = path.join(rootDir, 'public', 'uploads', folder, key);
@@ -278,50 +215,47 @@ export function camelliaFolderDecrypt(folder, key, socket, options) {
                 var iv = Buffer.alloc(16, 0);
         };
 
-        fs.readdir(folderPath, function (err, files) {
-            if (err) throw err;
+        const files = getFiles(folderPath);
+        if (err) throw err;
 
-            let percentage = 0;
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
+        let percentage = 0;
+        for (let file of files) {
+            const decipher = crypto.createDecipheriv(algorithm, keyInstance, iv);
+            const encryptedFilePath = file;
+            const encryptedFileName = file.split('/').slice(-1)[0];
+            const decryptedFileName = path.parse(encryptedFileName).name;
+            const decryptedFilePath = `${file.split('/').slice(0, -1).join('/')}/${decryptedFileName}`;
 
-                if (file !== key) {
-                    const decipher = crypto.createDecipheriv(algorithm, keyInstance, iv);
-                    const plaintextFilePath = path.join(rootDir, 'public', 'uploads', folder, file);
-                    const encryptedFilePath = path.join(rootDir, 'public', 'uploads', folder, `${getFileName(file)}.dec`);
-
-                    try {
-                        const decrypted = decipher.update(fs.readFileSync(plaintextFilePath, { encoding: 'hex' }), 'hex', 'binary') + decipher.final('binary');
-                        fs.writeFileSync(encryptedFilePath, decrypted, { encoding: 'binary' });
-                        fs.unlinkSync(plaintextFilePath);
-                    }
-                    catch (e) {
-                        console.log(e);
-                        socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data" });
-                        return;
-                    }
-                    for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
-                        socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
-                    }
-                    percentage += 95 / (files.length - 1);
-                }
+            try {
+                const decrypted = decipher.update(fs.readFileSync(encryptedFilePath, { encoding: 'hex' }), 'hex', 'binary') + decipher.final('binary');
+                fs.writeFileSync(decryptedFilePath, decrypted, { encoding: 'binary' });
+                fs.unlinkSync(encryptedFilePath);
             }
+            catch (e) {
+                console.log(e);
+                socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data" });
+                return;
+            }
+            for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
+                socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
+            }
+            percentage += 95 / (files.length - 1);
+        }
 
-            socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
+        socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
 
-            const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(folder)}.zip`));
-            const archive = archiver('zip', { zlib: { level: 9 } });
+        const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(folder)}.zip`));
+        const archive = archiver('zip', { zlib: { level: 9 } });
 
-            archive.pipe(compressedStream);
-            archive.directory(folderPath, false);
-            archive.finalize();
+        archive.pipe(compressedStream);
+        archive.directory(folderPath, false);
+        archive.finalize();
 
-            compressedStream.on('close', async function () {
-                socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(folder)}.zip` });
+        compressedStream.on('close', async function () {
+            socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(folder)}.zip` });
 
-                rimraf(folderPath, function (err) {
-                    if (err) console.log(err);
-                });
+            rimraf(folderPath, function (err) {
+                if (err) console.log(err);
             });
         });
     });

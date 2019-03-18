@@ -197,66 +197,66 @@ export function rsaEncrypt(plaintext, key, socket, options) {
     });
 }
 
-// export function aesFolderEncrypt(folder, key, socket, options) {
-//     const rootDir = process.cwd();
-//     const keyFilePath = path.join(rootDir, 'public', 'uploads', folder, key);
-//     const folderPath = path.join(rootDir, 'public', 'uploads', folder);
+export function camelliaFolderEncrypt(folder, key, socket, options) {
+    const rootDir = process.cwd();
+    const keyFilePath = path.join(rootDir, 'public', 'uploads', folder, key);
+    const folderPath = path.join(rootDir, 'public', 'uploads', folder);
 
-//     fs.readFile(keyFilePath, 'utf8', function (err, password) {
-//         if (err) throw err;
+    fs.readFile(keyFilePath, 'utf8', function (err, password) {
+        if (err) throw err;
 
-//         switch (options) {
-//             default: // Default case is for aes-192-cbc
-//                 var algorithm = 'aes-192-cbc';
-//                 var keyInstance = crypto.scryptSync(password, 'salt', 24);
-//                 var iv = Buffer.alloc(16, 0); // Initialization vector.
-//         };
+        switch (options) {
+            default: // Default case is for aes-192-cbc
+                var algorithm = 'camellia-192-cbc';
+                var keyInstance = crypto.scryptSync(password, 'salt', 24);
+                var iv = Buffer.alloc(16, 0); // Initialization vector.
+        };
 
-//         fs.readdir(folderPath, function (err, files) {
-//             if (err) throw err;
+        const files = getFiles(folderPath);
+        if (err) throw err;
 
-//             let percentage = 0;
-//             for (let file of files) {
-//                 if (file !== key) {
-//                     const plaintextFilePath = path.join(rootDir, 'public', 'uploads', folder, file);
-//                     const encryptedFilePath = path.join(rootDir, 'public', 'uploads', folder, `${file}.enc`);
-//                     const cipher = crypto.createCipheriv(algorithm, keyInstance, iv);
+        let percentage = 0;
+        for (let file of files) {
+            if (file !== key) {
+                const plaintextFilePath = file;
+                const plaintextFileName = file.split('/').slice(-1)[0];
+                const encryptedFilePath = `${file.split('/').slice(0, -1).join('/')}/${plaintextFileName}.enc`;
+                const cipher = crypto.createCipheriv(algorithm, keyInstance, iv);
 
-//                     try {
-//                         const encrypted = cipher.update(fs.readFileSync(plaintextFilePath, { encoding: 'binary' }), 'binary', 'hex') + cipher.final('hex');
-//                         fs.writeFileSync(encryptedFilePath, encrypted, { encoding: 'hex' });
-//                         fs.unlinkSync(plaintextFilePath);
-//                     } catch (e) {
-//                         console.log(e);
-//                         socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data. Maybe data is too large" });
-//                         return;
-//                     }
-//                     for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
-//                         socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
-//                     }
-//                     percentage += 95 / (files.length - 1);
-//                 }
-//             }
+                try {
+                    const encrypted = cipher.update(fs.readFileSync(plaintextFilePath, { encoding: 'binary' }), 'binary', 'hex') + cipher.final('hex');
+                    fs.writeFileSync(encryptedFilePath, encrypted, { encoding: 'hex' });
+                    fs.unlinkSync(plaintextFilePath);
+                } catch (e) {
+                    console.log(e);
+                    socket.emit(sharedConstants.SERVER_SENDS_ERROR_MESSAGE, { message: "Something wrong with your data. Maybe data is too large" });
+                    return;
+                }
+                for (let _percentage = percentage; _percentage < percentage + 95 / (files.length - 1); _percentage += 5) {
+                    socket.emit(sharedConstants.SERVER_SENDS_PROCESSING_PROGRESS);
+                }
+                percentage += 95 / (files.length - 1);
+            }
+        }
 
-//             socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
+        socket.emit(sharedConstants.SERVER_FINISHES_ENCRYPTION);
 
-//             const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(folder)}.zip`));
-//             const archive = archiver('zip', { zlib: { level: 9 } });
+        const compressedStream = fs.createWriteStream(path.join(rootDir, 'public', 'uploads', `${getFileName(folder)}.zip`));
+        const archive = archiver('zip', { zlib: { level: 9 } });
 
-//             archive.pipe(compressedStream);
-//             archive.directory(folderPath, false);
-//             archive.finalize();
+        archive.pipe(compressedStream);
+        archive.directory(folderPath, false);
+        archive.finalize();
 
-//             compressedStream.on('close', async function () {
-//                 socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(folder)}.zip` });
+        compressedStream.on('close', async function () {
+            socket.emit(sharedConstants.SERVER_FINISHES_COMPRESSION, { fileName: `${getFileName(folder)}.zip` });
 
-//                 rimraf(folderPath, function (err) {
-//                     if (err) console.log(err);
-//                 });
-//             });
-//         });
-//     });
-// }
+            rimraf(folderPath, function (err) {
+                if (err) console.log(err);
+            });
+        });
+    });
+}
 
 export function rsaFolderEncrypt(folder, key, socket, options) {
     const rootDir = process.cwd();
