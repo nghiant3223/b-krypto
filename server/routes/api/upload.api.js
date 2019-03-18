@@ -11,7 +11,7 @@ router.post('/file', uploadFile, function (req, res) {
 });
 
 router.post('/folder/:folderName', makeDirectory, uploadFolder, function (req, res) {
-    const resData = { plaintext: {foldername: req.hashedFolderName} , key: req.files.key[0] };
+    const resData = { plaintext: {foldername: req.hashedFolderName} , key: req.files.find(file => file.fieldname === 'key') };
     res.status(200).send(resData);
 });
 
