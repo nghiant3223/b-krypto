@@ -49,7 +49,6 @@ class KeyGenPage extends Component {
     }
 
     onSizeChange = (e) => {
-        console.log(e.target);
         this.setState({ value: e.target.value });
     }
 
