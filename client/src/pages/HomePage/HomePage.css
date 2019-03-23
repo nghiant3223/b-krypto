@@ -1,3 +1,7 @@
+.Homepage {
+    font-family: 'Roboto';
+}
+
 .LogoContainer {
     text-align: center;
 }
@@ -6,19 +10,72 @@
     transform: scale(0.75);
 }
 
-.Homepage>div {
-    margin-top: 2em;
-    margin-bottom: 2em;
+.IntroJumbotron {
+    text-align: right;
+    margin-bottom: 0px;
+    position: relative;
+    background: none;
+    color: #DEDDDB;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem !important;
 }
 
-.Homepage>div>h3{
-    margin-bottom: 0.25em;
+.IntroJumbotron .IntroJumbotron__Background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(https://glidemagazine.com/wp-content/uploads/2019/01/encryption-4.jpg);
+    background-position: 0% 25%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+     -o-filter: blur(3px);
+     -ms-filter: blur(3px);
+     filter: blur(3px);
+     z-index: -1;
 }
 
 .MemberContainer__Content {
-    padding-left: 2em;
+    text-align: center;
 }
 
-.Homepage>div>div {
-    padding-left: 2em;
+.MemberContainer__Content li {
+    display: inline-block;
+    margin: auto 4%;
+}
+
+.MemberContainer__Content li img {
+    border: solid rgba(0, 24, 124, 0.4) 2px;
+    border-radius: 50%;
+    display: block;
+    height: 120px;
+    width: 120px;
+    margin: 8px auto;
+}
+
+.ProductDescription__Content {
+    
+}
+
+.ProductDescription__Content ul {
+    list-style-type: circle;
+    margin-left: 24px;
+    padding: 0px 100px;
+}
+
+.ProductDescription__Content li {
+    list-style-type: circle;
+    margin-bottom: 8px;
+}
+
+.AlgorithmStrength {
+    margin-bottom: 60px;
+}
+
+.AlgorithmStrength__Content h1 {
+    font-family: 'VT323', monospace;
+    font-size: 6vw;
 }

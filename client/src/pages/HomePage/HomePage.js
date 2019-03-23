@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Jumbotron, Button, Container, Row, Col } from 'reactstrap';
 
 import './HomePage.css';
 
@@ -6,42 +7,83 @@ class HomePage extends Component {
     render() {
         return (
             <div className="Homepage">
-                < div className="MemberContainer" >
-                    <h1 className="MemberContainer__Header">Thành viên nhóm</h1>
-                    <ul className="MemberContainer__Content">
-                        <li>1. Nguyễn Gia Bảo</li>
-                        <li>2. Cao Chánh Dương</li>
-                        <li>3. Trần Cảnh Huy</li>
-                        <li>4. Nguyễn Trọng Nghĩa</li>
-                    </ul>
-                </div>
-
-
-                <div className="ProductDescription">
-                    < h1 className="ProductDescription__Header" >Sản phẩm</h1>
-                    <div className="ProductDescription__Content">
-                        <p>B-Krypto là sản phẩm của bài tập lớn 1 - môn Mật mã và an ninh mạng do nhóm thực hiện. Nhằm mục tiêu hiện thực các giải thuật mã hóa/ giải mã được học trên lớp, và tìm hiểu các giải thuật mã hóa khác, chứng minh tính an toàn của giải thuật được chọn và triển khai giải thuật đó để demo kết quả. Đồng thời luyệ cho sinh viên có khả năng ứng dụng các thư viện lập trình mã hóa để xây dựng chương trình mã hóa và giải mã các tập tin và thư mục ứng dụng trong thực tế.</p>
-                        <ol className="MemberContainer__Content">
-                            <li>Chương trình có khả năng mã hóa một tập tin bất kì như hình ảnh, âm thanh, văn bản, pdf... Sinh viên trình bày rõ trong báo cáo một số loại tập tin mà chương trình hỗ trợ mã hoá/ giải mã.</li>
-                            <li>Quá trình mã hóa: nhận input là tập tin bất kì và tập tin text chứa chìa khóa mã hóa ( encryption key) và một số option khác (nếu cần), output là tập tin hay thư mực chứa dữ liệu đã được mã hóa.</li>
-                            <li>Quá trình giải mã: nhận input là tập tin hay thư mục chứa dữ liệu đã được mã hóa và tập tin text chứa chìa khóa giải mã (decryption key) và một số option khác (nếu cần), output chương trình là tập tin được giãi mã thành công. Sử dụng các hàm Hash như MD5, SHA để chứng minh. tính toàn vẹn giữa tập tin gốc ban đầu được chọn và tập tin output của quá trình giải mã.</li>
-                        </ol>
+                <Jumbotron className="IntroJumbotron">
+                    <div className="IntroJumbotron__Content">
+                        <h1 className="display-1">B-Krypto</h1>
+                        <h2>Ứng dụng web hỗ trợ mã hóa và giải mã</h2>
+                        <p>Kéo thả tập tin/thư mục tiện lợi, mã hóa nhanh chóng và an toàn</p>
                     </div>
-                </div>
+                    <div className="IntroJumbotron__Background"></div>                    
+                </Jumbotron>
 
-                <div className="AlgorithmStrength">
-                    < h1 className="AlgorithmStrength">Các giải thuật được sử dụng</h1>
-                    <div className="AlgorithmStrength__Content">
-                        <h3>1. AES</h3>
-                            <p>AES viết tắt cho Advanced Encryption Standard, tên gốc là Rijndael. AES là block cipher đối xứng với block size 128 bit và key có độ dài 128/192/256 bit.</p>
-
-                        <h3>2. RSA</h3>
-                            <p>Thuật toán mã hóa RSA (Rivest–Shamir–Adleman) do ba nhà toán học và khoa học máy tính Ron Rivest, Adi Shamir và Leonard Adleman công bố lần đầu năm 1978. Thuật toán mã hoá RSA không phải là block-cipher hay stream-cipher vì cả 2 dạng block-cipher và stream-cipher đều sử dụng cùng một khóa để mã hóa và giải mã (mã hóa đối xứng). Trong khi đó, RSA là giải thuật mã hoá bất đối xứng, có nghĩa là mã hóa bằng một khóa khác với giải mã.</p>
-                        
-                        <h3>3. Camellia</h3>
-                            <p>Là giải thuật được phát triển tại Nhật Bản bởi công ty Mitsubishi và NTT vào năm 2000. Thuộc dạng block cipher với khóa đối xứng với chiều dài khối là 128 bits và độ dài khóa là 128 hoặc 192 hoặc 256 bits.</p>
+                <Container>
+                    <hr />
+                    <div className="MemberContainer my-4">
+                        <h1 className="MemberContainer__Header my-4 text-center">Thành viên nhóm</h1>
+                        <ul className="MemberContainer__Content">
+                            <li>
+                                <div>
+                                    <img src="images/bao.jpg" />
+                                    Nguyễn Gia Bảo<br/>1610172
+                                </div>    
+                            </li>
+                            <li>
+                                <div>
+                                    <img src="images/duong.jpg" />
+                                    Cao Chánh Dương<br/>1610571
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <img src="images/huy.png" />
+                                    Trần Cảnh Huy<br/>1611331
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <img src="images/nghia.jpg" />
+                                    Nguyễn Trọng Nghĩa<br/>1612212
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                </div>
+                    <hr />
+
+                    <div className="ProductDescription my-4">
+                        < h1 className="ProductDescription__Header my-4 text-center">Sản phẩm</h1>
+                        <div className="ProductDescription__Content">
+                            <p class="text-center"><strong>B-Krypto</strong> là sản phẩm của nhóm cho <strong>Bài tập lớn 1 - môn Mật mã và An ninh mạng</strong>.</p>
+                            <ul class="text-justify">
+                                <li>Ứng dụng hỗ trợ mã hóa một tập tin hoặc thư mục bất kì (hình ảnh, âm thanh, văn bản...).</li>
+                                <li>
+                                    Quá trình mã hóa: nhận input là tập tin/thư mục bất kì, tập tin text chứa khóa mã hóa (encryption key) và một số  option khác (nếu cần); output là tập tin ZIP chứa dữ liệu đã được mã hóa cùng với khóa mã hóa. 
+                                </li>
+                                <li>
+                                    Quá trình giải mã: nhận input là tập tin/thư mục chứa dữ liệu đã được mã hóa, tập tin text chứa khóa giải mã (decryption key) và một số option khác (nếu cần); output là tập tin/thư mục đã được giải mã thành công.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr />
+
+                    <div className="AlgorithmStrength mt-4">
+                        < h1 className="AlgorithmStrength__Header my-4 text-center">Các giải thuật sử dụng</h1>
+                        <div className="AlgorithmStrength__Content">
+                            <Row className="my-4">
+                                <Col xs={{size: 4, offset: 1}} className="text-right"><h1>AES</h1></Col>
+                                <Col xs="4">AES viết tắt cho Advanced Encryption Standard, tên gốc là Rijndael. AES là block cipher đối xứng với block size 128 bit và có độ dài khóa 128/192/256 bit.</Col>
+                            </Row>
+                            <Row className="my-4">
+                                <Col xs={{size: 4, offset: 1}} className="text-right"><h1>RSA</h1></Col>
+                                <Col xs="4">RSA được ba nhà toán học và khoa học máy tính Ron Rivest, Adi Shamir và Leonard Adleman công bố lần đầu năm 1978. RSA là giải thuật mã hoá bất đối xứng, có nghĩa là mã hóa bằng một khóa khác với khóa giải mã.</Col>
+                            </Row>
+                            <Row className="my-4">
+                                <Col xs={{size: 4, offset: 1}} className="text-right"><h1>Camellia</h1></Col>
+                                <Col xs="4">Camellia được phát triển bởi công ty Mitsubishi và NTT vào năm 2000. Camellia là block cipher đối xứng với block size là 128 bit và độ dài khóa 128/192/256 bit.</Col>
+                            </Row>
+                        </div>
+                    </div>
+                </Container>
             </div>
         );
     }
