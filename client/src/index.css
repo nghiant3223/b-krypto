@@ -41,3 +41,7 @@ button span {
   "Helvetica Neue",
   sans-serif;
 }
+
+ul {
+  list-style-type: none;
+}

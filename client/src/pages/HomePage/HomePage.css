@@ -1,0 +1,24 @@
+.LogoContainer {
+    text-align: center;
+}
+
+.LogoContainer img {
+    transform: scale(0.75);
+}
+
+.Homepage>div {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.Homepage>div>h3{
+    margin-bottom: 0.25em;
+}
+
+.MemberContainer__Content {
+    padding-left: 2em;
+}
+
+.Homepage>div>div {
+    padding-left: 2em;
+}
