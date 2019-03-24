@@ -71,15 +71,15 @@ class HomePage extends Component {
                         <div className="AlgorithmStrength__Content">
                             <Row className="my-4">
                                 <Col xs={{size: 4, offset: 1}} className="text-right"><h1>AES</h1></Col>
-                                <Col xs="4">AES viết tắt cho Advanced Encryption Standard, tên gốc là Rijndael. AES là block cipher đối xứng với block size 128 bit và có độ dài khóa 128/192/256 bit.</Col>
+                                <Col xs="4 text-justify">AES viết tắt cho Advanced Encryption Standard, tên gốc là Rijndael. AES là block cipher đối xứng với block size 128 bit và có độ dài khóa 128/192/256 bit.</Col>
                             </Row>
                             <Row className="my-4">
                                 <Col xs={{size: 4, offset: 1}} className="text-right"><h1>RSA</h1></Col>
-                                <Col xs="4">RSA được ba nhà toán học và khoa học máy tính Ron Rivest, Adi Shamir và Leonard Adleman công bố lần đầu năm 1978. RSA là giải thuật mã hoá bất đối xứng, có nghĩa là mã hóa bằng một khóa khác với khóa giải mã.</Col>
+                                <Col xs="4 text-justify">RSA được ba nhà toán học và khoa học máy tính Ron Rivest, Adi Shamir và Leonard Adleman công bố lần đầu năm 1978. RSA là giải thuật mã hoá bất đối xứng, có nghĩa là mã hóa bằng một khóa khác với khóa giải mã.</Col>
                             </Row>
                             <Row className="my-4">
                                 <Col xs={{size: 4, offset: 1}} className="text-right"><h1>Camellia</h1></Col>
-                                <Col xs="4">Camellia được phát triển bởi công ty Mitsubishi và NTT vào năm 2000. Camellia là block cipher đối xứng với block size là 128 bit và độ dài khóa 128/192/256 bit.</Col>
+                                <Col xs="4 text-justify">Camellia được phát triển bởi công ty Mitsubishi và NTT vào năm 2000. Camellia là block cipher đối xứng với block size là 128 bit và độ dài khóa 128/192/256 bit.</Col>
                             </Row>
                         </div>
                     </div>

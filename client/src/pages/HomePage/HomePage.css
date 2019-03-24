@@ -54,6 +54,12 @@
     height: 120px;
     width: 120px;
     margin: 8px auto;
+    opacity: 0.9;
+}
+
+.MemberContainer__Content li img:hover {
+    border: solid rgba(15, 46, 173, 0.8) 3px;
+    opacity: 1.0;
 }
 
 .ProductDescription__Content ul {
