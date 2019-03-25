@@ -5,10 +5,9 @@ import MainLayout from './layouts/MainLayout/MainLayout';
 import HomePage from './pages/HomePage/HomePage';
 import RSAPage from './pages/RSAPage/RSAPage';
 import AESPage from './pages/AESPage/AESPage';
-import WhyPage from './pages/WhyPage/WhyPage';
 import KeyGenPage from './pages/KeyGenPage/KeyGenPage';
 import CamelliaPage from './pages/CamelliaPage/CamelliaPage';
-
+import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 
 export default function router({ isAuthenticated }) {
     return (
@@ -18,9 +17,9 @@ export default function router({ isAuthenticated }) {
                     <Route path='/rsa' component={RSAPage} />
                     <Route path='/aes' component={AESPage} />
                     <Route path='/camellia' component={CamelliaPage} />
-                    <Route path='/why' component={WhyPage} />
                     <Route path='/keygen' component={KeyGenPage} />
                     <Route path='/' exact component={HomePage} />
+                    <Route path='/' component={NotFoundPage} />
                 </Switch>
             </MainLayout>
         </BrowserRouter>

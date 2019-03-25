@@ -1,0 +1,12 @@
+.error {
+    font-family: 'VT323', monospace;
+    display: block;
+    font-size: 4vw;
+    margin-bottom: 40px;
+}
+
+#error-code {
+    font-size: 24vh;
+    font-weight: bold;
+    margin: 0px;
+}
